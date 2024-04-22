@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="serial_no"           default="235422300934"/>
+  <arg name="usb_port_id"         default=""/>
+  <arg name="json_file_path"      default=""/>
+  <arg name="device_type"         default=""/>
+  <arg name="camera2"             default="camera2"/>
+  <arg name="tf_prefix"           default="$(optenv ROS_NAMESPACE)/camera2"/>
+  <arg name="manager"             default="realsense2_camera_manager"/>
+  <arg name="external_manager"    default="false"/>
+  <arg name="initial_reset"       default="true"/>
+  <arg name="output"              default="screen"/>
+  <arg name="depth_width"       value="848"/> <!--848-->
+  <arg name="depth_height"      value="480"/> <!--480-->
+  <arg name="depth_fps"         value="30"/>
+  <arg name="color_width"       value="848"/>
+  <arg name="color_height"      value="480"/>
+  <arg name="color_fps"         value="15"/>
+
+  <arg name="filters"           default="decimation"/>
+  <arg name="clip_distance"     value="2.0"/> <!--threshold filter : 2.0-->
+
+  <group ns="$(arg camera2)">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="tf_prefix"         value="$(arg tf_prefix)"/>
+      <arg name="external_manager"  value="$(arg external_manager)"/>
+      <arg name="manager"           value="$(arg manager)"/>
+      <arg name="output"            value="$(arg output)"/>
+      <arg name="serial_no"         value="$(arg serial_no)"/>
+      <arg name="usb_port_id"       value="$(arg usb_port_id)"/>
+      <arg name="device_type"       value="$(arg device_type)"/>
+      <arg name="json_file_path"    value="$(arg json_file_path)"/>
+
+      <arg name="enable_depth"      value="true"/>
+      <arg name="enable_color"      value="true"/>
+      <arg name="enable_infra1"     value="false"/>
+      <arg name="enable_infra2"     value="false"/>
+      <arg name="enable_fisheye"    value="false"/>
+      <arg name="enable_gyro"       value="false"/> <!-- false -->
+      <arg name="enable_accel"      value="false"/> <!-- false -->
+      <arg name="enable_pointcloud" value="true"/>
+      <arg name="enable_sync"       value="true"/>
+      <arg name="align_depth"       value="false"/>
+      
+      <arg name="depth_width"       value="$(arg depth_width)"/>
+      <arg name="depth_height"      value="$(arg depth_height)"/>+
+      <arg name="color_width"       value="$(arg color_width)"/>
+      <arg name="color_height"      value="$(arg color_height)"/>
+      
+      <arg name="depth_fps"         value="$(arg depth_fps)"/>
+      <arg name="color_fps"         value="$(arg color_fps)"/>
+
+      <arg name="filters"           value="$(arg filters)"/>
+      <arg name="clip_distance"     value="$(arg clip_distance)"/>
+      <arg name="initial_reset"     value="$(arg initial_reset)"/>
+    </include>
+  </group>
+
+    <!--<node name="$(anon dynparam)" pkg="dynamic_reconfigure" type="dynparam" args="set_from_parameters camera1/stereo_module">
+    <param name="hdr_enabled" type="bool" value="true" />
+  </node>-->
+   <!--<node pkg="tf" type="static_transform_publisher" name="base_link_to_camera1_link"
+    args="0.1754 -0.097 0.0 0.0 0.0 3.14 $(optenv ROS_NAMESPACE)/base_link camera1_link 30" /> -->
+
+</launch>
