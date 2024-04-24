@@ -36,6 +36,9 @@
 #### virtual_costmap_layer2 : GMahmoud가 만든 가상 레이어 패키지에서 플러그인 이름만 수정한 버전 (local costmap에 활용)
 #### virtual_costmap_layer2: A version with only the plugin name modified from the virtual layer package created by GMahmoud (used for local costmap)
 
+#### sh_files : 로봇의 전체적인 구동을 위한 쉘 스크립트 실행파일
+#### sh_files : Shell script executable file for overall operation of the robot
+
 <br>
 
 ![1](https://user-images.githubusercontent.com/103166594/220823974-8fde85da-4c52-4bb3-9638-9e6d5bca1c39.png)
