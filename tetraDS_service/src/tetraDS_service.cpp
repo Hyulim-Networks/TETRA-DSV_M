@@ -1347,7 +1347,7 @@ bool Depart_Station2Move(int marker_id)
     {
         m_fdistance = sqrt(_pAR_tag_pose.m_transform_pose_x * _pAR_tag_pose.m_transform_pose_x + _pAR_tag_pose.m_transform_pose_y * _pAR_tag_pose.m_transform_pose_y);
         printf("Depart_fdistance: %.5f \n", m_fdistance);
-        if(m_fdistance < 0.3 && _pRobot_Status.m_iCallback_Charging_status < 2)
+        if(m_fdistance < 0.2 && _pRobot_Status.m_iCallback_Charging_status < 2)
         {
             printf("Cant move because robot has docked but docking_station doesn`t work !! \n");
             cmd->linear.x = 0.0;           
@@ -1365,7 +1365,7 @@ bool Depart_Station2Move(int marker_id)
                 }
                 else
                 {
-                    cmd->linear.x =  -0.05; 
+                    cmd->linear.x =  0.05; 
                     cmd->angular.z = 0.0;
                     cmdpub_.publish(cmd);
                     bResult = false;
@@ -4925,12 +4925,12 @@ int main (int argc, char** argv)
                                 continue;
                             }
                             virtual_obstacle2_pub.publish(virtual_obstacle2);
-			    // 231115 add
-                            if(m_iList_Count2 == 0){
-                                m_bFlag_virtualWallCheck = false;
-                            }
-
-                    	}
+                        }
+			            // 231115 add
+                        if(m_iList_Count2 == 0){
+                            m_bFlag_virtualWallCheck = false;
+                        }
+                    }
                 }
                 else
                 {
@@ -4943,4 +4943,4 @@ int main (int argc, char** argv)
     }
     return 0;
 }
-}
+
