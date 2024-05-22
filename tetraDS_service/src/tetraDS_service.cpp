@@ -1356,7 +1356,7 @@ bool Depart_Station2Move(int marker_id)
         {
             if(_pAR_tag_pose.m_transform_pose_x <= 0.6) //600mm depart move
             {
-                if(_pFlag_Value.m_bFlag_Obstacle_cygbot)
+                if(_pFlag_Value.m_bFlag_Obstacle_Center)
                 {
                     cmd->linear.x =  0.0; 
                     cmd->angular.z = 0.0;
