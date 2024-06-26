@@ -4,8 +4,8 @@
   <arg name="usb_port_id"         default=""/>
   <arg name="json_file_path"      default=""/>
   <arg name="device_type"         default=""/>
-  <arg name="camera2"             default="camera2"/>
-  <arg name="tf_prefix"           default="$(optenv ROS_NAMESPACE)/camera2"/>
+  <arg name="camera1"             default="camera1"/>
+  <arg name="tf_prefix"           default="$(optenv ROS_NAMESPACE)/camera1"/>
   <arg name="manager"             default="realsense2_camera_manager"/>
   <arg name="external_manager"    default="false"/>
   <arg name="initial_reset"       default="true"/>
@@ -20,7 +20,7 @@
   <arg name="filters"           default="decimation"/>
   <arg name="clip_distance"     value="2.0"/> <!--threshold filter : 2.0-->
 
-  <group ns="$(arg camera2)">
+  <group ns="$(arg camera1)">
     <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
       <arg name="tf_prefix"         value="$(arg tf_prefix)"/>
       <arg name="external_manager"  value="$(arg external_manager)"/>
