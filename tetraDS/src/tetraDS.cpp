@@ -349,7 +349,7 @@ bool Parameter_Write_Command(tetraDS::parameter_write::Request  &req,
 							 tetraDS::parameter_write::Response &res)
 {
 	bool bResult = false;
-    
+    dssp_rs232_drv_module_set_servo(0);
 	dssp_rs232_drv_module_set_parameter(req.num, req.data);
 	/*
 	int32 num
