@@ -156,7 +156,7 @@ Visualization Manager:
           Value: true
       Name: RobotModel
       Robot Description: robot_description
-      TF Prefix: TE22052402
+      TF Prefix: TETRA_NS
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -165,63 +165,63 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        TE22052402/Front_bumper:
+        TETRA_NS/Front_bumper:
           Value: true
-        TE22052402/base_Upperlink:
+        TETRA_NS/base_Upperlink:
           Value: true
-        TE22052402/base_Upperlink2:
+        TETRA_NS/base_Upperlink2:
           Value: true
-        TE22052402/base_footprint:
+        TETRA_NS/base_footprint:
           Value: true
-        TE22052402/base_l_wheel_link:
+        TETRA_NS/base_l_wheel_link:
           Value: true
-        TE22052402/base_link:
+        TETRA_NS/base_link:
           Value: true
-        TE22052402/base_r_wheel_link:
+        TETRA_NS/base_r_wheel_link:
           Value: true
-        TE22052402/camera1_aligned_depth_to_color_frame:
+        TETRA_NS/camera1_aligned_depth_to_color_frame:
           Value: true
-        TE22052402/camera1_color_frame:
+        TETRA_NS/camera1_color_frame:
           Value: true
-        TE22052402/camera1_color_optical_frame:
+        TETRA_NS/camera1_color_optical_frame:
           Value: true
-        TE22052402/camera1_depth_frame:
+        TETRA_NS/camera1_depth_frame:
           Value: true
-        TE22052402/camera1_depth_optical_frame:
+        TETRA_NS/camera1_depth_optical_frame:
           Value: true
-        TE22052402/camera1_link:
+        TETRA_NS/camera1_link:
           Value: true
-        TE22052402/camera2_aligned_depth_to_color_frame:
+        TETRA_NS/camera2_aligned_depth_to_color_frame:
           Value: true
-        TE22052402/camera2_color_frame:
+        TETRA_NS/camera2_color_frame:
           Value: true
-        TE22052402/camera2_color_optical_frame:
+        TETRA_NS/camera2_color_optical_frame:
           Value: true
-        TE22052402/camera2_depth_frame:
+        TETRA_NS/camera2_depth_frame:
           Value: true
-        TE22052402/camera2_depth_optical_frame:
+        TETRA_NS/camera2_depth_optical_frame:
           Value: true
-        TE22052402/camera2_link:
+        TETRA_NS/camera2_link:
           Value: true
-        TE22052402/imu_link:
+        TETRA_NS/imu_link:
           Value: true
-        TE22052402/laser:
+        TETRA_NS/laser:
           Value: true
-        TE22052402/odom:
+        TETRA_NS/odom:
           Value: true
-        TE22052402/rear_caster_rotate:
+        TETRA_NS/rear_caster_rotate:
           Value: true
-        TE22052402/rear_caster_wheel:
+        TETRA_NS/rear_caster_wheel:
           Value: true
-        TE22052402/sonar_DL:
+        TETRA_NS/sonar_DL:
           Value: true
-        TE22052402/sonar_DR:
+        TETRA_NS/sonar_DR:
           Value: true
-        TE22052402/sonar_RL:
+        TETRA_NS/sonar_RL:
           Value: true
-        TE22052402/sonar_RR:
+        TETRA_NS/sonar_RR:
           Value: true
-        TE22052402/usb_cam:
+        TETRA_NS/usb_cam:
           Value: true
         ar_marker_0:
           Value: true
@@ -240,7 +240,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /TE22052402/map
+      Topic: /TETRA_NS/map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -267,14 +267,14 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.029999999329447746
       Style: Flat Squares
-      Topic: /TE22052402/scan
+      Topic: /TETRA_NS/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /TE22052402/marker/node
+      Marker Topic: /TETRA_NS/marker/node
       Name: Marker
       Namespaces:
         {}
@@ -282,7 +282,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /TE22052402/usb_cam/image_raw
+      Image Topic: /TETRA_NS/usb_cam/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0

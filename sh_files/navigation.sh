@@ -4,7 +4,7 @@ source /opt/ros/melodic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 source ~/.bashrc
 echo $map_name
-export ROS_NAMESPACE=TE2222006
+export ROS_NAMESPACE=TETRA_NS
 
 pkill -9 -f move_base
 sleep 1

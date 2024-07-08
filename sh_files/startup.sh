@@ -9,7 +9,7 @@ while ! ip route get 1.1.1.1 | grep -oP 'src \K\S+'; do
 done
 export ROS_IP=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
 export ROS_MASTER_URI=http://$ROS_IP:11311
-export ROS_NAMESPACE=TE2222006
+export ROS_NAMESPACE=TETRA_NS
 export ROS_HOSTNAME=$ROS_IP
 #export ROS_NAMESPACE=DS4
 rosclean purge -y

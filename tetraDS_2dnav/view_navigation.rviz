@@ -185,7 +185,7 @@ Visualization Manager:
           Value: true
       Name: RobotModel
       Robot Description: robot_description
-      TF Prefix: TE2315001
+      TF Prefix: TETRA_NS
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -194,55 +194,55 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        TE2315001/Front_bumper:
+        TETRA_NS/Front_bumper:
           Value: true
-        TE2315001/base_Upperlink:
+        TETRA_NS/base_Upperlink:
           Value: true
-        TE2315001/base_footprint:
+        TETRA_NS/base_footprint:
           Value: true
-        TE2315001/base_l_wheel_link:
+        TETRA_NS/base_l_wheel_link:
           Value: true
-        TE2315001/base_link:
+        TETRA_NS/base_link:
           Value: true
-        TE2315001/base_r_wheel_link:
+        TETRA_NS/base_r_wheel_link:
           Value: true
-        TE2315001/camera1_aligned_depth_to_color_frame:
+        TETRA_NS/camera1_aligned_depth_to_color_frame:
           Value: true
-        TE2315001/camera1_color_frame:
+        TETRA_NS/camera1_color_frame:
           Value: true
-        TE2315001/camera1_color_optical_frame:
+        TETRA_NS/camera1_color_optical_frame:
           Value: true
-        TE2315001/camera1_depth_frame:
+        TETRA_NS/camera1_depth_frame:
           Value: true
-        TE2315001/camera1_depth_optical_frame:
+        TETRA_NS/camera1_depth_optical_frame:
           Value: true
-        TE2315001/camera1_link:
+        TETRA_NS/camera1_link:
           Value: true
-        TE2315001/imu_link:
+        TETRA_NS/imu_link:
           Value: true
-        TE2315001/l_rear_caster_rotate:
+        TETRA_NS/l_rear_caster_rotate:
           Value: true
-        TE2315001/l_rear_caster_wheel:
+        TETRA_NS/l_rear_caster_wheel:
           Value: true
-        TE2315001/laser:
+        TETRA_NS/laser:
           Value: true
-        TE2315001/laser_link2:
+        TETRA_NS/laser_link2:
           Value: true
-        TE2315001/odom:
+        TETRA_NS/odom:
           Value: true
-        TE2315001/r_rear_caster_rotate:
+        TETRA_NS/r_rear_caster_rotate:
           Value: true
-        TE2315001/r_rear_caster_wheel:
+        TETRA_NS/r_rear_caster_wheel:
           Value: true
-        TE2315001/sonar_DL:
+        TETRA_NS/sonar_DL:
           Value: true
-        TE2315001/sonar_DR:
+        TETRA_NS/sonar_DR:
           Value: true
-        TE2315001/sonar_RL:
+        TETRA_NS/sonar_RL:
           Value: true
-        TE2315001/sonar_RR:
+        TETRA_NS/sonar_RR:
           Value: true
-        TE2315001/usb_cam:
+        TETRA_NS/usb_cam:
           Value: true
         ar_marker_0:
           Value: true
@@ -255,47 +255,47 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          TE2315001/odom:
-            TE2315001/base_footprint:
-              TE2315001/base_link:
-                TE2315001/Front_bumper:
+          TETRA_NS/odom:
+            TETRA_NS/base_footprint:
+              TETRA_NS/base_link:
+                TETRA_NS/Front_bumper:
                   {}
-                TE2315001/base_Upperlink:
+                TETRA_NS/base_Upperlink:
                   {}
-                TE2315001/base_l_wheel_link:
+                TETRA_NS/base_l_wheel_link:
                   {}
-                TE2315001/base_r_wheel_link:
+                TETRA_NS/base_r_wheel_link:
                   {}
-                TE2315001/camera1_link:
-                  TE2315001/camera1_aligned_depth_to_color_frame:
-                    TE2315001/camera1_color_optical_frame:
+                TETRA_NS/camera1_link:
+                  TETRA_NS/camera1_aligned_depth_to_color_frame:
+                    TETRA_NS/camera1_color_optical_frame:
                       {}
-                  TE2315001/camera1_color_frame:
+                  TETRA_NS/camera1_color_frame:
                     {}
-                  TE2315001/camera1_depth_frame:
-                    TE2315001/camera1_depth_optical_frame:
+                  TETRA_NS/camera1_depth_frame:
+                    TETRA_NS/camera1_depth_optical_frame:
                       {}
-                TE2315001/imu_link:
+                TETRA_NS/imu_link:
                   {}
-                TE2315001/l_rear_caster_rotate:
-                  TE2315001/l_rear_caster_wheel:
+                TETRA_NS/l_rear_caster_rotate:
+                  TETRA_NS/l_rear_caster_wheel:
                     {}
-                TE2315001/laser:
+                TETRA_NS/laser:
                   {}
-                TE2315001/laser_link2:
+                TETRA_NS/laser_link2:
                   {}
-                TE2315001/r_rear_caster_rotate:
-                  TE2315001/r_rear_caster_wheel:
+                TETRA_NS/r_rear_caster_rotate:
+                  TETRA_NS/r_rear_caster_wheel:
                     {}
-                TE2315001/sonar_DL:
+                TETRA_NS/sonar_DL:
                   {}
-                TE2315001/sonar_DR:
+                TETRA_NS/sonar_DR:
                   {}
-                TE2315001/sonar_RL:
+                TETRA_NS/sonar_RL:
                   {}
-                TE2315001/sonar_RR:
+                TETRA_NS/sonar_RR:
                   {}
-                TE2315001/usb_cam:
+                TETRA_NS/usb_cam:
                   ar_marker_0:
                     {}
       Update Interval: 0
@@ -325,7 +325,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.009999999776482582
           Style: Points
-          Topic: /TE2315001/scan
+          Topic: /TETRA_NS/scan
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -353,7 +353,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/scan_laser
+          Topic: /TETRA_NS/scan_laser
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -381,7 +381,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/scan
+          Topic: /TETRA_NS/scan
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -413,7 +413,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/move_base/local_costmap/sonar_obstacle_layer_DL/voxel_grid
+          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_DL/voxel_grid
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -441,7 +441,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/move_base/local_costmap/sonar_obstacle_layer_RL/voxel_grid
+          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_RL/voxel_grid
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: false
@@ -469,7 +469,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/move_base/local_costmap/sonar_obstacle_layer_RR/voxel_grid
+          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_RR/voxel_grid
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -497,7 +497,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.029999999329447746
           Style: Flat Squares
-          Topic: /TE2315001/move_base/local_costmap/sonar_obstacle_layer_DR/voxel_grid
+          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_DR/voxel_grid
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -529,7 +529,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.05000000074505806
           Style: Points
-          Topic: /TE2315001/camera1/depth/color/points
+          Topic: /TETRA_NS/camera1/depth/color/points
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -557,7 +557,7 @@ Visualization Manager:
           Size (Pixels): 3
           Size (m): 0.05000000074505806
           Style: Points
-          Topic: /TE2315001/camera1/depth/color/points
+          Topic: /TETRA_NS/camera1/depth/color/points
           Unreliable: false
           Use Fixed Frame: true
           Use rainbow: true
@@ -570,7 +570,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /TE2315001/map
+      Topic: /TETRA_NS/map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -582,7 +582,7 @@ Visualization Manager:
           Draw Behind: true
           Enabled: true
           Name: Costmap
-          Topic: /TE2315001/move_base/global_costmap/costmap
+          Topic: /TETRA_NS/move_base/global_costmap/costmap
           Unreliable: false
           Use Timestamp: false
           Value: true
@@ -606,7 +606,7 @@ Visualization Manager:
           Radius: 0.029999999329447746
           Shaft Diameter: 0.10000000149011612
           Shaft Length: 0.10000000149011612
-          Topic: /TE2315001/move_base/TebLocalPlannerROS/global_plan
+          Topic: /TETRA_NS/move_base/TebLocalPlannerROS/global_plan
           Unreliable: false
           Value: true
       Enabled: true
@@ -619,7 +619,7 @@ Visualization Manager:
           Draw Behind: false
           Enabled: true
           Name: Costmap
-          Topic: /TE2315001/move_base/local_costmap/costmap
+          Topic: /TETRA_NS/move_base/local_costmap/costmap
           Unreliable: false
           Use Timestamp: false
           Value: true
@@ -643,7 +643,7 @@ Visualization Manager:
           Radius: 0.029999999329447746
           Shaft Diameter: 0.10000000149011612
           Shaft Length: 0.10000000149011612
-          Topic: /TE2315001/move_base/TebLocalPlannerROS/local_plan
+          Topic: /TETRA_NS/move_base/TebLocalPlannerROS/local_plan
           Unreliable: false
           Value: true
       Enabled: true
@@ -661,7 +661,7 @@ Visualization Manager:
       Shaft Length: 0.23000000417232513
       Shaft Radius: 0.009999999776482582
       Shape: Arrow (Flat)
-      Topic: /TE2315001/particlecloud
+      Topic: /TETRA_NS/particlecloud
       Unreliable: false
       Value: false
     - Alpha: 1
@@ -684,7 +684,7 @@ Visualization Manager:
       Radius: 0.029999999329447746
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
-      Topic: /TE2315001/move_base/GlobalPlanner/plan
+      Topic: /TETRA_NS/move_base/GlobalPlanner/plan
       Unreliable: false
       Value: false
     - Alpha: 1
@@ -692,12 +692,12 @@ Visualization Manager:
       Color: 25; 255; 0
       Enabled: false
       Name: Polygon
-      Topic: /TE2315001/move_base/local_costmap/footprint
+      Topic: /TETRA_NS/move_base/local_costmap/footprint
       Unreliable: false
       Value: false
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /TE2315001/move_base/TebLocalPlannerROS/teb_markers
+      Marker Topic: /TETRA_NS/move_base/TebLocalPlannerROS/teb_markers
       Name: Marker
       Namespaces:
         PointObstacles: true
@@ -706,7 +706,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: false
-      Marker Topic: /TE2315001/marker/node
+      Marker Topic: /TETRA_NS/marker/node
       Name: Marker
       Namespaces:
         {}
@@ -714,7 +714,7 @@ Visualization Manager:
       Value: false
     - Class: rviz/Marker
       Enabled: false
-      Marker Topic: /TE2315001/visualization_marker
+      Marker Topic: /TETRA_NS/visualization_marker
       Name: Marker
       Namespaces:
         {}
@@ -751,7 +751,7 @@ Visualization Manager:
         Shaft Length: 0.30000001192092896
         Shaft Radius: 0.05000000074505806
         Value: Arrow
-      Topic: /TE2315001/odom
+      Topic: /TETRA_NS/odom
       Unreliable: false
       Value: true
     - Angle Tolerance: 0.10000000149011612
@@ -785,12 +785,12 @@ Visualization Manager:
         Shaft Length: 0.30000001192092896
         Shaft Radius: 0.05000000074505806
         Value: Arrow
-      Topic: /TE2315001/odometry/filtered
+      Topic: /TETRA_NS/odometry/filtered
       Unreliable: false
       Value: false
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /TE2315001/usb_cam/image_raw
+      Image Topic: /TETRA_NS/usb_cam/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -814,15 +814,15 @@ Visualization Manager:
     - Class: rviz/Select
     - Class: rviz/SetInitialPose
       Theta std deviation: 0.2617993950843811
-      Topic: /TE2315001/initialpose
+      Topic: /TETRA_NS/initialpose
       X std deviation: 0.5
       Y std deviation: 0.5
     - Class: rviz/SetGoal
-      Topic: /TE2315001/move_base_simple/goal
+      Topic: /TETRA_NS/move_base_simple/goal
     - Class: rviz/Measure
     - Class: rviz/PublishPoint
       Single click: true
-      Topic: /TE2315001/clicked_point
+      Topic: /TETRA_NS/clicked_point
     - Class: rviz_custom/CreateRestrict
       Clear All: false
       Size: 10

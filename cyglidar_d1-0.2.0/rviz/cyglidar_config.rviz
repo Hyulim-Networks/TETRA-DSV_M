@@ -80,7 +80,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.029999999329447746
       Style: Flat Squares
-      Topic: /TE0714001/scan_2D
+      Topic: /TETRA_NS/scan_2D
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -108,7 +108,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.029999999329447746
       Style: Flat Squares
-      Topic: /TE0714001/scan_3D
+      Topic: /TETRA_NS/scan_3D
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -136,7 +136,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.029999999329447746
       Style: Flat Squares
-      Topic: /TE0714001/scan_laser
+      Topic: /TETRA_NS/scan_laser
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
