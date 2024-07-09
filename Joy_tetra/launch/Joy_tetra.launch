@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+<node pkg="Joy_tetra" type="Joy_tetra" name="Joy_tetra" output="screen" />
+</launch>
