@@ -110,7 +110,10 @@
 <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find tetraDS_2dnav)/view_navigation.rviz" /> -->
 
 <node pkg="tetraDS_TCP" type="tetraDS_TCP" name="tetraDS_TCP" output="screen" args="5100" />
-  
+
+<!-- web_video_server 
+<node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen" />
+-->
 </launch>
 
 
