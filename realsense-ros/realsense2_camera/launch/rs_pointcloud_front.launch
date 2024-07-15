@@ -26,7 +26,7 @@
       <arg name="external_manager"  value="$(arg external_manager)"/>
       <arg name="manager"           value="$(arg manager)"/>
       <arg name="output"            value="$(arg output)"/>
-      <arg name="serial_no"         value="$(arg serial_no)"/>
+      <!--<arg name="serial_no"         value="$(arg serial_no)"/> 여러 리얼센스 사용시 주석 해제-->
       <arg name="usb_port_id"       value="$(arg usb_port_id)"/>
       <arg name="device_type"       value="$(arg device_type)"/>
       <arg name="json_file_path"    value="$(arg json_file_path)"/>
