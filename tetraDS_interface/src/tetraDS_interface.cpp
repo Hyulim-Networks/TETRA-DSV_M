@@ -1175,6 +1175,7 @@ int main(int argc, char * argv[])
 
 		if(m_bConveyor_option)
 		{
+			// mo1 추가 필요
 			//Conveyor Loadcell weight
 			dssp_rs232_power_module_read_loadcell(&m_dLoadcell_weight);
 
