@@ -10,11 +10,11 @@
   <arg name="external_manager"    default="false"/>
   <arg name="initial_reset"       default="true"/>
   <arg name="output"              default="screen"/>
-  <arg name="depth_width"       value="848"/> <!--848-->
-  <arg name="depth_height"      value="480"/> <!--480-->
+  <arg name="depth_width"       value="1280"/> <!--848-->
+  <arg name="depth_height"      value="720"/> <!--480-->
   <arg name="depth_fps"         value="30"/>
-  <arg name="color_width"       value="848"/>
-  <arg name="color_height"      value="480"/>
+  <arg name="color_width"       value="1280"/><!--848-->
+  <arg name="color_height"      value="720"/><!--480-->
   <arg name="color_fps"         value="15"/>
 
   <arg name="filters"           default="decimation"/>
@@ -40,7 +40,7 @@
       <arg name="enable_accel"      value="false"/> <!-- false -->
       <arg name="enable_pointcloud" value="true"/>
       <arg name="enable_sync"       value="true"/>
-      <arg name="align_depth"       value="true"/>
+      <arg name="align_depth"       value="false"/><!-- true -->
       
       <arg name="depth_width"       value="$(arg depth_width)"/>
       <arg name="depth_height"      value="$(arg depth_height)"/>+

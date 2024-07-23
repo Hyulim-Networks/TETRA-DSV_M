@@ -40,8 +40,6 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: Image
-  - Class: rviz_visual_tools/RvizVisualToolsGui
-    Name: RvizVisualToolsGui
   - Class: rviz/Displays
     Help Height: 0
     Name: Displays
@@ -823,9 +821,6 @@ Visualization Manager:
     - Class: rviz/PublishPoint
       Single click: true
       Topic: /TETRA_NS/clicked_point
-    - Class: rviz_custom/CreateRestrict
-      Clear All: false
-      Size: 10
   Value: true
   Views:
     Current:

@@ -23,12 +23,10 @@
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
 
-
-
 <!-- add Landmark load node-->
  <node pkg="tetraDS_landmark" type="tetraDS_landmark_load" name="tetraDS_landmark_load" output="screen" />
 
 <!-- rviz -->
-<node pkg="rviz" type="rviz" name="rviz" args="-d $(find tetraDS_2dnav)/view_navigation.rviz" />
+<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find tetraDS_2dnav)/view_navigation.rviz" />
 
 </launch>
