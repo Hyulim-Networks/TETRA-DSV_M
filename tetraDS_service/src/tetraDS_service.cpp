@@ -1339,7 +1339,7 @@ bool GetLocation_Command(tetraDS_service::getlocation::Request  &req,
 bool Depart_Station2Move(int marker_id)
 {
     bool bResult = false;
-    printf("Depart_station2Move ... docking exit!! \n"); //240315 mwcha made new func
+    printf("Depart_station2Move ... docking exit!! \n"); 
 
     float m_fdistance = 0.0;
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
