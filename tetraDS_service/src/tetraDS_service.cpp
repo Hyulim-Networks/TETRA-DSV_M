@@ -2094,6 +2094,8 @@ void Reset_EKF_SetPose()
 
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)! \n");
+	usleep(200000);
+
 
 	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
 	initPose_.header.frame_id = "map";
