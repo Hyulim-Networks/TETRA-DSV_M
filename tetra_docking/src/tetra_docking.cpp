@@ -23,16 +23,16 @@
 #include <utility>
 #include <cmath>
 
+#include "angles/angles.h"
+
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
-
 
 #include <move_base_msgs/MoveBaseAction.h>
 #include <tetra_docking/DockRobotAction.h>
 #include <tetra_docking/UndockRobotAction.h>
 
-
-#include "angles/angles.h"
+#include <ar_track_alvar_msgs/AlvarMarkers.h>
 
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TwistStamped.h>
@@ -342,7 +342,7 @@ protected:
   // Threshold that battery current must exceed to be "charging" (in Amperes)
   double charging_threshold_;
   // If not using an external pose reference, this is the distance threshold
-  double docking_threshold_;
+  double docking_threshold_ = 0.3;
   // Offset for staging pose relative to dock pose
   double staging_x_offset_;
   double staging_yaw_offset_;
@@ -395,9 +395,8 @@ struct Dock
   std::string id;
   ChargingDock::Ptr plugin{nullptr};
 };
-
-
 Dock curr_dock_;
+
 std::unique_ptr<TwistPublisher> vel_publisher_;
 
 double clamp(double x, double upper, double lower)
@@ -452,8 +451,8 @@ geometry_msgs::PoseStamped getDockPoseStamped(
 }
 
 
-void detectedDockPose(const geometry_msgs::PoseStamped::ConstPtr pose) {
-  detected_dock_pose_ = *pose;
+void detectedDockPose(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr pose) {
+  detected_dock_pose_ = pose->markers[0].pose;
 }
 
 
@@ -823,7 +822,6 @@ public:
 
   void undockRobot(const tetra_docking::UndockRobotGoalConstPtr &goal)
   {
-    std::lock_guard<std::mutex> lock(*mutex_);
     action_start_time_ = ros::Time(0);
     ros::Rate loop_rate(controller_frequency);
 
@@ -952,7 +950,6 @@ public:
 
   void dockRobot(const tetra_docking::DockRobotGoalConstPtr &goal)
   {
-    std::lock_guard<std::mutex> lock(*mutex_);
     action_start_time_ = ros::Time(0);
     ros::Rate loop_rate(controller_frequency);
     int num_retries=0;
@@ -1097,12 +1094,15 @@ int main(int argc, char ** argv)
   DockActionServer dockActionServer("dockActionServer");
   UndockActionServer undockActionServer("undockActionServer");
 
+  std::unique_ptr<ChargingDock> plugin;
+
   curr_dock_.frame = "map";
   curr_dock_.type = "dock1";
   curr_dock_.pose.position.x = 0.0;
   curr_dock_.pose.position.y = 0.0;
   curr_dock_.pose.orientation = orientationAroundZAxis(0.0);
   curr_dock_.id = '0';
+  curr_dock_.plugin= std::make_unique<ChargingDock>();
   
   vel_publisher_ = std::make_unique<TwistPublisher>(nh, "cmd_vel", 1);
   
@@ -1110,8 +1110,8 @@ int main(int argc, char ** argv)
   filtered_dock_pose_pub_ = nh.advertise<geometry_msgs::PoseStamped>("filtered_dock_pose", 1, true);
   staging_pose_pub_ = nh.advertise<geometry_msgs::PoseStamped>("staging_pose", 1, true);
 
-  ros::Subscriber dock_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>(
-    "detected_dock_pose", 
+  ros::Subscriber dock_pose_sub = nh.subscribe<ar_track_alvar_msgs::AlvarMarkers>(
+    "ar_pose_marker", 
     1, 
     detectedDockPose
   );

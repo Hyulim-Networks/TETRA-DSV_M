@@ -1336,54 +1336,51 @@ bool GetLocation_Command(tetraDS_service::getlocation::Request  &req,
 	return true;
 }
 
-bool Depart_Station2Move(int marker_id)
+bool Depart_Station2Move()
 {
     bool bResult = false;
     printf("Depart_station2Move ... docking exit!! \n"); 
 
     float m_fdistance = 0.0;
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
-    if(_pAR_tag_pose.m_iAR_tag_id == marker_id)
+    m_fdistance = sqrt(_pAR_tag_pose.m_transform_pose_x * _pAR_tag_pose.m_transform_pose_x + _pAR_tag_pose.m_transform_pose_y * _pAR_tag_pose.m_transform_pose_y);
+    printf("Depart_fdistance: %.5f \n", m_fdistance);
+    if(m_fdistance < 0.2 && _pRobot_Status.m_iCallback_Charging_status < 2)
     {
-        m_fdistance = sqrt(_pAR_tag_pose.m_transform_pose_x * _pAR_tag_pose.m_transform_pose_x + _pAR_tag_pose.m_transform_pose_y * _pAR_tag_pose.m_transform_pose_y);
-        printf("Depart_fdistance: %.5f \n", m_fdistance);
-        if(m_fdistance < 0.2 && _pRobot_Status.m_iCallback_Charging_status < 2)
+        printf("Cant move because robot has docked but docking_station doesn`t work !! \n");
+        cmd->linear.x = 0.0;           
+    }
+    else
+    {
+        if(_pAR_tag_pose.m_transform_pose_x <= 0.6) //600mm depart move
         {
-            printf("Cant move because robot has docked but docking_station doesn`t work !! \n");
-            cmd->linear.x = 0.0;           
-        }
-        else
-        {
-            if(_pAR_tag_pose.m_transform_pose_x <= 0.6) //600mm depart move
-            {
-                if(_pFlag_Value.m_bFlag_Obstacle_Center)
-                {
-                    cmd->linear.x =  0.0; 
-                    cmd->angular.z = 0.0;
-                    cmdpub_.publish(cmd);
-                    bResult = false;
-                }
-                else
-                {
-                    cmd->linear.x =  0.05; 
-                    cmd->angular.z = 0.0;
-                    cmdpub_.publish(cmd);
-                    bResult = false;
-                }    
-            }
-            else
+            if(_pFlag_Value.m_bFlag_Obstacle_Center)
             {
                 cmd->linear.x =  0.0; 
                 cmd->angular.z = 0.0;
                 cmdpub_.publish(cmd);
-
-                //add goto cmd call//
-                setGoal(goal);
-
-                ex_iDocking_CommandMode = 0;
-
-                bResult = true;
+                bResult = false;
             }
+            else
+            {
+                cmd->linear.x =  0.05; 
+                cmd->angular.z = 0.0;
+                cmdpub_.publish(cmd);
+                bResult = false;
+            }    
+        }
+        else
+        {
+            cmd->linear.x =  0.0; 
+            cmd->angular.z = 0.0;
+            cmdpub_.publish(cmd);
+
+            //add goto cmd call//
+            setGoal(goal);
+
+            ex_iDocking_CommandMode = 0;
+
+            bResult = true;
         }
     }
 
@@ -3966,7 +3963,7 @@ void *DockingThread_function(void *data)
                 break;
             case 10:
                 Sonar_On(1); //add_sonar_on/off
-                Depart_Station2Move(_pAR_tag_pose.m_iSelect_AR_tag_id);
+                Depart_Station2Move();
                 break;
             /****************************************************************/
             // Conveyor Docking Loop//
