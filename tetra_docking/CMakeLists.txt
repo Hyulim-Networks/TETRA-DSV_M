@@ -20,13 +20,6 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
 )
 
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-add_service_files(
-  FILES
-  ##parameter_read.srv
-)
 
 add_action_files(DIRECTORY action FILES DockRobot.action UndockRobot.action)
 
@@ -42,10 +35,8 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  INCLUDE_DIRS include
   LIBRARIES tetra_docking
   CATKIN_DEPENDS roscpp rospy message_generation message_runtime tf2 tf2_geometry_msgs actionlib_msgs
-  DEPENDS system_lib
 )
 
 ###########
