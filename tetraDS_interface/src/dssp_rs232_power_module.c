@@ -46,41 +46,14 @@ int  dssp_rs232_power_module_read_battery(double *dbattery, double *dVoltage, do
 	return ret;
 }
 
-int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output, double *Ultrasonic)
+int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output)
 {
 	int ret;
 
-	ret = power_read_tetra(_power, dbattery, dVoltage, dCurrent, mode_status, Input, Output, Ultrasonic);
+	ret = power_read_tetra(_power, dbattery, dVoltage, dCurrent, mode_status, Input, Output);
 
 	return ret;
 }
-
-int  dssp_rs232_power_module_set_Ultrasonic(int mode)
-{
-	int ret;
-
-	if(mode == 1) //On
-	{
-		ret = power_set_Ultrasonic(_power, 1);
-	}
-	else // Off
-	{
-		ret = power_set_Ultrasonic(_power, 0);
-	}
-
-	return ret;
-}
-
-int  dssp_rs232_power_module_read_Ultrasonic(double * Ultrasonic)
-{
-	int ret;
-
-	ret = power_read_Ultrasonic(_power, Ultrasonic);
-
-	return ret;
-}
-
-
 
 int  dssp_rs232_power_module_set_light(int id, int brightness)
 {
@@ -187,15 +160,6 @@ int  dssp_rs232_power_module_version_read(int *idata_0, int *idata_1, int *idata
 	int ret;
 
 	ret = power_version_read(_power, idata_0, idata_1, idata_2, idata_3, idata_4, idata_5, idata_6, idata_7);
-	
-	return ret;
-}
-
-int  dssp_rs232_power_module_sonar_read(int *idata_0, int *idata_1, int *idata_2, int *idata_3,int *idata_4, int *idata_5) 
-{
-	int ret;
-
-	ret = power_sonar_read(_power, idata_0, idata_1, idata_2, idata_3, idata_4, idata_5);
 	
 	return ret;
 }

@@ -104,71 +104,6 @@
     <child link="Front_bumper" />
   </joint>
 
-
- <link name="sonar_DL">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.01 0.01 0.01" />
-        </geometry>
-        <material name="Grey" />
-      </visual>
-  </link>
-
-  <joint name="sonar_DL" type="fixed">
-    <origin xyz="-0.34654 0.245 -0.02517" rpy="0 0 1.5708" />
-    <parent link="base_link"/>
-    <child link="sonar_DL" />
-  </joint>
-
- <link name="sonar_RL">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.01 0.01 0.01" />
-        </geometry>
-        <material name="Grey" />
-      </visual>
-  </link>
-
-  <joint name="sonar_RL" type="fixed">
-    <origin xyz="-0.3902 0.18754 0.197" rpy="0 0 3.14" />
-    <parent link="base_link"/>
-    <child link="sonar_RL" />
-  </joint>
-
- <link name="sonar_RR">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.01 0.01 0.01" />
-        </geometry>
-        <material name="Grey" />
-      </visual>
-  </link>
-
-  <joint name="sonar_RR" type="fixed">
-    <origin xyz="-0.3902 -0.18754 0.197" rpy="0 0 3.14" />
-    <parent link="base_link"/>
-    <child link="sonar_RR" />
-  </joint>
-
- <link name="sonar_DR">
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.01 0.01 0.01" />
-        </geometry>
-        <material name="Grey" />
-      </visual>
-  </link>
-
-  <joint name="sonar_DR" type="fixed">
-    <origin xyz="-0.34654 -0.245 -0.02517" rpy="0 0 -1.5708" />
-    <parent link="base_link"/>
-    <child link="sonar_DR" />
-  </joint>
-
  <link name="camera1_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -211,6 +146,3 @@
 
 
 </robot>
-
-
-

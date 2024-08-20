@@ -7,10 +7,6 @@ Panels:
         - /TF1/Frames1
         - /SCAN1/LaserScan1
         - /SCAN1/LaserScan2
-        - /Ultrasonic1/PointCloud21
-        - /Ultrasonic1/PointCloud22
-        - /Ultrasonic1/PointCloud23
-        - /Ultrasonic1/PointCloud24
         - /Local Map1/Planner1
         - /Marker1/Namespaces1
         - /Marker2/Namespaces1
@@ -156,26 +152,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        sonar_DL:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_DR:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_RL:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_RR:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         usb_cam:
           Alpha: 1
           Show Axes: false
@@ -232,16 +208,6 @@ Visualization Manager:
           Value: true
         TETRA_NS/r_rear_caster_wheel:
           Value: true
-        TETRA_NS/sonar_DL:
-          Value: true
-        TETRA_NS/sonar_DR:
-          Value: true
-        TETRA_NS/sonar_RL:
-          Value: true
-        TETRA_NS/sonar_RR:
-          Value: true
-        TETRA_NS/usb_cam:
-          Value: true
         ar_marker_0:
           Value: true
         map:
@@ -285,14 +251,6 @@ Visualization Manager:
                 TETRA_NS/r_rear_caster_rotate:
                   TETRA_NS/r_rear_caster_wheel:
                     {}
-                TETRA_NS/sonar_DL:
-                  {}
-                TETRA_NS/sonar_DR:
-                  {}
-                TETRA_NS/sonar_RL:
-                  {}
-                TETRA_NS/sonar_RR:
-                  {}
                 TETRA_NS/usb_cam:
                   ar_marker_0:
                     {}
@@ -386,122 +344,6 @@ Visualization Manager:
           Value: false
       Enabled: true
       Name: SCAN
-    - Class: rviz/Group
-      Displays:
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 138; 226; 52
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: PointCloud2
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.029999999329447746
-          Style: Flat Squares
-          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_DL/voxel_grid
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 0.5070000290870667
-            Min Value: 0.5070000290870667
-            Value: true
-          Axis: X
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 138; 226; 52
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: true
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: PointCloud2
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.029999999329447746
-          Style: Flat Squares
-          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_RL/voxel_grid
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: false
-          Value: true
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 138; 226; 52
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: PointCloud2
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.029999999329447746
-          Style: Flat Squares
-          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_RR/voxel_grid
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud2
-          Color: 138; 226; 52
-          Color Transformer: FlatColor
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
-          Name: PointCloud2
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.029999999329447746
-          Style: Flat Squares
-          Topic: /TETRA_NS/move_base/local_costmap/sonar_obstacle_layer_DR/voxel_grid
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-      Enabled: false
-      Name: Ultrasonic
     - Class: rviz/Group
       Displays:
         - Alpha: 0.5

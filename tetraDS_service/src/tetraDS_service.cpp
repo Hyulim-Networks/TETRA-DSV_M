@@ -33,7 +33,6 @@
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud2.h> //bumper
 #include <sensor_msgs/Joy.h> //add 
-#include <sensor_msgs/Range.h> //Ultrasonic//
 #include <teb_local_planner/TrajectoryMsg.h>
 #include <teb_local_planner/TrajectoryPointMsg.h>
 #include <teb_local_planner/FeedbackMsg.h>
@@ -124,8 +123,6 @@
 #include "tetraDS_service/sethome_id.h"
 //Set EKF & IMU Reset Service//
 #include "tetraDS_service/setekf.h"
-//SONAR Sensor On/Off
-#include "tetraDS_service/power_sonar_cmd.h" //SRV
 //add... manual backmove Service//
 #include "tetraDS_service/manual_backmove.h" //SRV ... 240125
 
@@ -377,11 +374,6 @@ typedef struct AR_TAG_POSE
 }AR_TAG_POSE;
 AR_TAG_POSE _pAR_tag_pose;
 
-// Ultrasonic_range//
-float m_Ultrasonic_DL_Range = 0.0;
-float m_Ultrasonic_DR_Range = 0.0;
-float m_Ultrasonic_RL_Range = 0.0;
-float m_Ultrasonic_RR_Range = 0.0;
 //roslaunch mode check//
 int ex_ilaunchMode = 0;
 
@@ -554,9 +546,6 @@ geometry_msgs::PoseWithCovarianceStamped set_pose;
 //local_costmap toggle_enabled Service Client// add 240129 mwcha
 ros::ServiceClient toggle_enabled_client;
 std_srvs::SetBool toggle_enabled;
-//sonar sensor
-ros::ServiceClient power_sonar_cmd_client;
-tetraDS_service::power_sonar_cmd Power_sonar_srv;
 
 //Bumper_data to Pointcloud2_data//
 ros::Publisher  pointcloud_pub_;
@@ -989,12 +978,6 @@ void Dynamic_reconfigure_Costmap_Set_BoolParam(string strname, bool bValue)
     DRB_old_strname = strname;
     DRB_old_bValue = bValue;
 
-}
-
-void Sonar_On(int iOn)
-{
-    Power_sonar_srv.request.start = iOn;
-    power_sonar_cmd_client.call(Power_sonar_srv);
 }
 
 void LED_Turn_On(int id)
@@ -2496,26 +2479,6 @@ void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
 
 }
 
-void Ultrasonic_DL_Callback(const sensor_msgs::Range::ConstPtr& msg)
-{
-    m_Ultrasonic_DL_Range = msg->range;
-}
-
-void Ultrasonic_DR_Callback(const sensor_msgs::Range::ConstPtr& msg)
-{
-    m_Ultrasonic_DR_Range = msg->range;
-}
-
-void Ultrasonic_RL_Callback(const sensor_msgs::Range::ConstPtr& msg)
-{
-    m_Ultrasonic_RL_Range = msg->range;
-}
-
-void Ultrasonic_RR_Callback(const sensor_msgs::Range::ConstPtr& msg)
-{
-    m_Ultrasonic_RR_Range = msg->range;
-}
-
 //Conveyor function
 void LoadcellCallback(const std_msgs::Float64::ConstPtr& msg)
 {
@@ -2936,17 +2899,6 @@ double Rotation_Movement()
 {
     double iResult = 0.1;
 
-    if(m_Ultrasonic_DR_Range < 0.3 )
-    {
-        m_iRotation_Mode = 1;
-        printf(" CCW Rotation--- \n");
-    }
-    else if(m_Ultrasonic_DL_Range < 0.3)
-    {
-        m_iRotation_Mode = 2;
-        printf(" CW Rotation+++ \n");
-    }
-
     switch(m_iRotation_Mode)
     {
         case 0:
@@ -2991,19 +2943,6 @@ bool BumperCollision_Behavior()
     }
     else
     {
-        // if((m_Ultrasonic_RL_Range <= 0.2) || (m_Ultrasonic_RR_Range <= 0.2))
-        // {
-        //     cmd->linear.x =  0.0; 
-        //     cmd->angular.z = 0.0;
-        //     cmdpub_.publish(cmd);
-        // }
-        // else
-        // {
-        //     cmd->linear.x =  -0.02; 
-        //     cmd->angular.z = 0.0;
-        //     cmdpub_.publish(cmd);
-        //     _pRobot_Status.m_iBumperCollisionBehavor_cnt++;
-        // } 
         if(_pFlag_Value.m_bFlag_Obstacle_cygbot)
         {
             cmd->linear.x =  0.0; 
@@ -3968,7 +3907,6 @@ void *DockingThread_function(void *data)
                 LED_Turn_On(63);
 
                 ex_iDocking_CommandMode = 0;
-                Sonar_On(0); //add_sonar_on/off
 
                 break;
             case 9:
@@ -3981,7 +3919,6 @@ void *DockingThread_function(void *data)
                 ex_iDocking_CommandMode = 119;
                 break;
             case 10:
-                Sonar_On(1); //add_sonar_on/off
                 Depart_Station2Move();
                 break;
             /****************************************************************/
@@ -4049,7 +3986,6 @@ void *DockingThread_function(void *data)
                 
                 LED_Toggle_Control(1, 5,100,5,1);
                 LED_Turn_On(63);
-                Sonar_On(0); //add_sonar_on/off
                 ex_iDocking_CommandMode = 0;
                 break;
             /****************************************************************/
@@ -4658,8 +4594,6 @@ int main (int argc, char** argv)
     //cygbot_mark toggle_enabled Service Client//
     toggle_enabled_client = client_h.serviceClient<std_srvs::SetBool>("move_base/local_costmap/cygbot_obstacle_layer/cygbot_mark/toggle_enabled");
     //Infomation_subscriber//
-    //sonar sensor on/off
-    power_sonar_cmd_client = client_h.serviceClient<tetraDS_service::power_sonar_cmd>("Power_sonar_start_cmd");
 
     //Infomation_subscriber//
     ros::NodeHandle nInfo;
@@ -4674,13 +4608,6 @@ int main (int argc, char** argv)
     //add..Total Distance sub ... 240129 mwcha
     ros::Subscriber total_distance_sub = nInfo.subscribe<std_msgs::Float32>("total_distance", 10, TotalDistance_Callback);
 
-    //Ultrasonic_subscriber//
-    ros::Subscriber ultrasonic_FL = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_D_L", 10, Ultrasonic_DL_Callback);
-    ros::Subscriber ultrasonic_FR = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_D_R", 10, Ultrasonic_DR_Callback);
-    ros::Subscriber ultrasonic_RL = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_R_L", 10, Ultrasonic_RL_Callback);
-    ros::Subscriber ultrasonic_RR = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_R_R", 10, Ultrasonic_RR_Callback);
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //bumper_data to Pointcloud2_data///
     ros::NodeHandle nbumper;
     pointcloud_.header.frame_id = tf_prefix_ + "/Front_bumper";

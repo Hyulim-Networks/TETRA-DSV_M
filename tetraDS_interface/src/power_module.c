@@ -325,7 +325,7 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 	return ret;
 }
 
-int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output,double *Ultrasonic)
+int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output)
 {
 	unsigned char packet_buf[255] = {STX, 'P','Q', ETX};
 	int ret;
@@ -370,74 +370,9 @@ int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurren
 		Input[i]  = Input_binary[i];
 		Output[i] = Output_binary[i];
 	}
-	int _m_Sonar_1 = (packet_buf[16] & 0xff) | ((packet_buf[15] << 8) & 0xff00);
-	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
-	int _m_Sonar_2 = (packet_buf[18] & 0xff) | ((packet_buf[17] << 8) & 0xff00);
-	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
-	int _m_Sonar_3 = (packet_buf[20] & 0xff) | ((packet_buf[19] << 8) & 0xff00);
-	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
-	int _m_Sonar_0= (packet_buf[22] & 0xff) | ((packet_buf[21] << 8) & 0xff00);
-	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
-
 
 	return ret;
 }
-
-int  power_read_Ultrasonic(int fd,  double *Ultrasonic)
-{
-	unsigned char packet_buf[255] = {STX, 'P','N', ETX};
-	int ret;
-	if(!fd) return -1;
-	packet_buf[4] = make_lrc(&packet_buf[1], 3);
-	ret = write(fd, packet_buf, 5);
-	if(ret <= 0) return -2;
-
-	memset(packet_buf, 0, sizeof(unsigned char)*255);
-	ret = get_response2(fd, packet_buf);
-	if(packet_buf[1] == 0x02) //Packet Error Pass..
-	{
-		return -1;
-	}
-
-	int _m_Sonar_1 = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
-	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
-	int _m_Sonar_2 = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
-	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
-	int _m_Sonar_3 = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
-	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
-	int _m_Sonar_0= (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
-	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
-
-	return ret;
-}
-
-
-int power_set_Ultrasonic(int fd, int mode)
-{
-	int ret;
-	unsigned char packet_buf[255] = {STX, 'P', 'S'};
-	
-	if(!fd) return -1;
-
-	if(mode == 1)//On
-	{
-		packet_buf[3] = '1';
-	}
-	else//Off
-	{
-		packet_buf[3] = '0';
-	}
-	packet_buf[4] = ETX;
-	packet_buf[5] = make_lrc(&packet_buf[1], 4);
-
-	ret = write(fd, packet_buf, 6);
-	if(ret <= 0) return -2;
-
-	memset(packet_buf, 0, sizeof(unsigned char)*255);
-	ret = get_response(fd, packet_buf);
-	return ret;
-}
-
 
 int  power_data_read(int fd, int *idata_0, int *idata_1, int *idata_2, int *idata_3,int *idata_4, int *idata_5, int *idata_6, int *idata_7, 
                           int *idata_8, int *idata_9, int *idata_10, int *idata_11)
@@ -545,38 +480,6 @@ int  power_version_read(int fd, int *idata_0, int *idata_1, int *idata_2, int *i
 	int m_data7 = (packet_buf[18] & 0xff) | ((packet_buf[17] << 8) & 0xff00);
 	*idata_7 = m_data7;
 	
-	return ret;
-}
-
-int  power_sonar_read(int fd, int *idata_0, int *idata_1, int *idata_2, int *idata_3,int *idata_4, int *idata_5) 
-{
-	unsigned char packet_buf[255] = {STX, 'P','N', ETX};
-	int ret;
-	if(!fd) return -1;
-	packet_buf[4] = make_lrc(&packet_buf[1], 3);
-	ret = write(fd, packet_buf, 5);
-	if(ret <= 0) return -2;
-
-	memset(packet_buf, 0, sizeof(unsigned char)*255);
-	ret = get_response2(fd, packet_buf);
-	if(packet_buf[1] == 0x02) //Packet Error Pass..
-	{
-		return -1;
-	}
-
-	int m_data0 = (packet_buf[4] & 0xff) | ((packet_buf[3] << 8) & 0xff00);
-	*idata_0 = m_data0;
-	int m_data1 = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
-	*idata_1 = m_data1;
-	int m_data2 = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
-	*idata_2 = m_data2;
-	int m_data3 = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
-	*idata_3 = m_data3;
-	int m_data4 = (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
-	*idata_4 = m_data4;
-	int m_data5 = (packet_buf[14] & 0xff) | ((packet_buf[13] << 8) & 0xff00);
-	*idata_5 = m_data5;
-		
 	return ret;
 }
 

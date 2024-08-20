@@ -129,26 +129,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        sonar_DL:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_DR:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_RL:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        sonar_RR:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         usb_cam:
           Alpha: 1
           Show Axes: false
@@ -212,14 +192,6 @@ Visualization Manager:
         TETRA_NS/rear_caster_rotate:
           Value: true
         TETRA_NS/rear_caster_wheel:
-          Value: true
-        TETRA_NS/sonar_DL:
-          Value: true
-        TETRA_NS/sonar_DR:
-          Value: true
-        TETRA_NS/sonar_RL:
-          Value: true
-        TETRA_NS/sonar_RR:
           Value: true
         TETRA_NS/usb_cam:
           Value: true

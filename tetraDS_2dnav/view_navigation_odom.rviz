@@ -188,14 +188,6 @@ Visualization Manager:
           Value: false
         r_rear_caster_wheel:
           Value: false
-        sonar_FL:
-          Value: false
-        sonar_FR:
-          Value: false
-        sonar_RL:
-          Value: false
-        sonar_RR:
-          Value: false
         usb_cam:
           Value: false
         usb_cam2:
@@ -243,14 +235,6 @@ Visualization Manager:
               r_rear_caster_rotate:
                 r_rear_caster_wheel:
                   {}
-              sonar_FL:
-                {}
-              sonar_FR:
-                {}
-              sonar_RL:
-                {}
-              sonar_RR:
-                {}
               usb_cam:
                 ar_marker_0:
                   {}

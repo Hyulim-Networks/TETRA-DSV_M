@@ -44,9 +44,7 @@ add_service_files(
   conveyor_data_read.srv
   power_data_read.srv
   power_version_read.srv
-  power_sonar_read.srv
   power_adc_read.srv
-  power_sonar_cmd.srv
   power_get_io_status.srv
 )
 

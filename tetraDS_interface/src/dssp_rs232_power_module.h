@@ -1,10 +1,8 @@
 int  dssp_rs232_power_module_create(const char *device, int time_out);
 void dssp_rs232_power_module_destroy();
 int  dssp_rs232_power_module_read_battery(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
-int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output, double *Ultrasonic);
+int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
 int  dssp_rs232_power_module_read_bumper(int *bumper_data);
-int  dssp_rs232_power_module_set_Ultrasonic(int mode);
-int  dssp_rs232_power_module_read_Ultrasonic(double * Ultrasonic);
 int  dssp_rs232_power_module_adc_read(int *iADB_0, int *iADB_1, int *iADB_2, int *iADB_3, int *iADB_4, int *iADB_5, int *iADB_6, int *iADB_7);
 int  dssp_rs232_power_module_set_light(int id, int brightness);
 int  dssp_rs232_power_module_toggle_on(int id);
@@ -25,7 +23,6 @@ int  dssp_rs232_conveyor_module_data_read(int *idata_0, int *idata_1, int *idata
 int  dssp_rs232_power_module_data_read(int *idata_0, int *idata_1, int *idata_2, int *idata_3, int *idata_4, int *idata_5, int *idata_6, 
                                             int *idata_7, int *idata_8, int *idata_9, int *idata_10, int *idata_11);    
 int  dssp_rs232_power_module_version_read(int *idata_0, int *idata_1, int *idata_2, int *idata_3,int *idata_4, int *idata_5, int *idata_6, int *idata_7);
-int  dssp_rs232_power_module_sonar_read(int *idata_0, int *idata_1, int *idata_2, int *idata_3,int *idata_4, int *idata_5);                                                                                                                               
 int  dssp_rs232_power_module_set_charging_ready(int on);
 //sampling read
 int  dssp_rs232_power_module_read_Voltage(int *Voltage_data);

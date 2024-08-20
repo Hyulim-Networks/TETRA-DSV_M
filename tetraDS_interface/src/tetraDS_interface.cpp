@@ -8,7 +8,6 @@
 #include <std_msgs/Float64.h>
 #include <std_srvs/Empty.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/Range.h> //Ultrasonic//
 #include "pcl_ros/point_cloud.h"
 #include "pcl/point_types.h"
 #include "pcl_conversions/pcl_conversions.h"
@@ -34,9 +33,7 @@
 #include <tetraDS_interface/conveyor_data_read.h> // SRV
 #include <tetraDS_interface/power_data_read.h> // SRV
 #include <tetraDS_interface/power_version_read.h> // SRV
-#include <tetraDS_interface/power_sonar_read.h> // SRV
 #include <tetraDS_interface/power_adc_read.h> // SRV
-#include <tetraDS_interface/power_sonar_cmd.h> //SRV
 
 
 
@@ -55,8 +52,6 @@ extern "C"
 #include <unistd.h>
 using namespace std;
 
-#define Ultrasonic_MIN_range	0.04
-#define Ultrasonic_MAX_range	0.5
 #define BUF_LEN 4096
 
 //Power parameter data
@@ -104,12 +99,6 @@ double m_dCurrent = 0.0;
 int m_imode_status = 0;
 int m_iPowerCheck = 0;
 int m_iPowerCheckCount = 0;
-//Ultrasonic data//
-double m_dUltrasonic[8] = {0.0, };  //Max Ultrasonic: 8ea (TETRA-DS5 used 4ea)
-sensor_msgs::Range range_msg1; //Ultrasonic_1
-sensor_msgs::Range range_msg2; //Ultrasonic_2
-sensor_msgs::Range range_msg3; //Ultrasonic_3
-sensor_msgs::Range range_msg4; //Ultrasonic_4
 double time_offset_in_seconds;
 //GPIO data//
 int m_iOutput[8] = {0,};
@@ -144,10 +133,6 @@ tetraDS_interface::power_get_io_status Power_io_status_cmd;
 tetraDS_interface::GPIO gpio_msg;
 ros::Publisher GPIO_pub;
 
-ros::Publisher points_1;
-ros::Publisher points_2;
-ros::Publisher points_3;
-ros::Publisher points_4;
 
 //Conveyor Loadcell CAL
 ros::ServiceServer loadcell_callibration_service;
@@ -166,9 +151,6 @@ ros::ServiceServer power_single_enable_service;
 tetraDS_interface::power_set_single_enable Power_single_enable_cmd;
 ros::ServiceServer power_wheel_enable_service;
 tetraDS_interface::power_wheel_enable Power_wheel_enable_cmd;
-//PowerSensor SONAR START
-ros::ServiceServer power_sonar_cmd_service;
-tetraDS_interface::power_sonar_cmd Power_sonar_start_cmd;
 
 //tetra parameter read & write service
 ros::ServiceServer power_parameter_read_service;
@@ -187,8 +169,6 @@ ros::ServiceServer power_data_read_service;
 tetraDS_interface::power_data_read Power_data_read_cmd;
 ros::ServiceServer power_version_read_service;
 tetraDS_interface::power_version_read Power_version_read_cmd;
-ros::ServiceServer power_sonar_read_service;
-tetraDS_interface::power_sonar_read Power_sonar_read_cmd;
 ros::ServiceServer power_adc_read_service;
 tetraDS_interface::power_adc_read Power_adc_read_cmd;
 
@@ -483,116 +463,6 @@ bool Conveyor_Manual_Move_Command(tetraDS_interface::conveyor_manual_movement::R
 	return true;
 }
 
-void RangeToCloud_D_L(const sensor_msgs::Range::ConstPtr& range_msg)
-{
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-	cloud->header.stamp = pcl_conversions::toPCL(range_msg->header).stamp;
-	if(has_prefix)
-	{
-		cloud->header.frame_id = tf_prefix_ + "/sonar_DL";
-	}
-	else
-	{
-		cloud->header.frame_id = "sonar_DL";
-	}
-
-	cloud->height = 1;
-
-	if (range_msg->range < std::numeric_limits<float>::infinity())
-	{
-		tf::Point pt(range_msg->range, 0.0, 0.0);
-		pcl::PointXYZ pcl_point;
-		pcl_point.x = pt.m_floats[0];
-		pcl_point.y = pt.m_floats[1];
-		pcl_point.z = pt.m_floats[2];
-		cloud->points.push_back(pcl_point);
-		++cloud->width;
-		points_1.publish(cloud);
-	}
-}
-
-void RangeToCloud_R_L(const sensor_msgs::Range::ConstPtr& range_msg)
-{
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-	cloud->header.stamp = pcl_conversions::toPCL(range_msg->header).stamp;
-	if(has_prefix)
-	{
-		cloud->header.frame_id = tf_prefix_ + "/sonar_RL";
-	}
-	else
-	{
-		cloud->header.frame_id = "sonar_RL";
-	}
-	
-	cloud->height = 1;
-
-	if (range_msg->range < std::numeric_limits<float>::infinity())
-	{
-		tf::Point pt(range_msg->range, 0.0, 0.0);
-		pcl::PointXYZ pcl_point;
-		pcl_point.x = pt.m_floats[0];
-		pcl_point.y = pt.m_floats[1];
-		pcl_point.z = pt.m_floats[2];
-		cloud->points.push_back(pcl_point);
-		++cloud->width;
-		points_2.publish(cloud);
-	}
-}
-
-void RangeToCloud_R_R(const sensor_msgs::Range::ConstPtr& range_msg)
-{
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-	cloud->header.stamp = pcl_conversions::toPCL(range_msg->header).stamp;
-	if(has_prefix)
-	{
-		cloud->header.frame_id = tf_prefix_ + "/sonar_RR";
-	}
-	else
-	{
-		cloud->header.frame_id = "sonar_RR";
-	}
-	cloud->height = 1;
-
-	if (range_msg->range < std::numeric_limits<float>::infinity())
-	{
-		tf::Point pt(range_msg->range, 0.0, 0.0);
-		pcl::PointXYZ pcl_point;
-		pcl_point.x = pt.m_floats[0];
-		pcl_point.y = pt.m_floats[1];
-		pcl_point.z = pt.m_floats[2];
-		cloud->points.push_back(pcl_point);
-		++cloud->width;
-		points_3.publish(cloud);
-	}
-}
-
-void RangeToCloud_D_R(const sensor_msgs::Range::ConstPtr& range_msg)
-{
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-	cloud->header.stamp = pcl_conversions::toPCL(range_msg->header).stamp;
-	if(has_prefix)
-	{
-		cloud->header.frame_id = tf_prefix_ + "/sonar_DR";
-	}
-	else
-	{
-		cloud->header.frame_id = "sonar_DR";
-	}
-	cloud->height = 1;
-
-	if (range_msg->range < std::numeric_limits<float>::infinity())
-	{
-		tf::Point pt(range_msg->range, 0.0, 0.0);
-		pcl::PointXYZ pcl_point;
-		pcl_point.x = pt.m_floats[0];
-		pcl_point.y = pt.m_floats[1];
-		pcl_point.z = pt.m_floats[2];
-		cloud->points.push_back(pcl_point);
-		++cloud->width;
-		points_4.publish(cloud);
-	}
-}
-
 bool PowerEnableOnOff(tetraDS_interface::power_set_enable::Request  &req, 
 			tetraDS_interface::power_set_enable::Response &res)
 {
@@ -809,24 +679,6 @@ bool Power_version_Read_Command(tetraDS_interface::power_version_read::Request  
 	return true;
 }
 
-bool Power_sonar_Read_Command(tetraDS_interface::power_sonar_read::Request  &req, 
-				tetraDS_interface::power_sonar_read::Response &res)
-{
-	bool bResult = false;
-    
-	dssp_rs232_power_module_sonar_read(&m_iParam0,&m_iParam1,&m_iParam2,&m_iParam3,&m_iParam4,&m_iParam5);
-	res.D0_SONAR0 = m_iParam0;
-	res.D1_SONAR1 = m_iParam1;
-	res.D2_SONAR2 = m_iParam2;
-	res.D3_SONAR3 = m_iParam3;
-	res.D4_SONAR4 = m_iParam4;
-	res.D5_SONAR5 = m_iParam5;
-	
-   	bResult = true;
-	res.command_Result = bResult;
-	return true;
-}
-
 bool Power_adc_Read_Command(tetraDS_interface::power_adc_read::Request  &req, 
 				tetraDS_interface::power_adc_read::Response &res)
 {
@@ -887,25 +739,6 @@ bool Conveyor_parameter_Write_Command(tetraDS_interface::conveyor_parameter_writ
 	return true;
 }
 
-
-
-bool Power_sonar_start_Command(tetraDS_interface::power_sonar_cmd::Request  &req, 
-				tetraDS_interface::power_sonar_cmd::Response &res)
-{
-	bool bResult = false;
-	dssp_rs232_power_module_set_Ultrasonic(req.start);
-	
-    /*
-    int32 start
-    ---
-    bool command_Result
-    */
-	bResult = true;
-	res.command_Result = bResult;
-	return true;
-}
-
-
 int limit_time = 0;
 int main(int argc, char * argv[])
 {
@@ -952,12 +785,6 @@ int main(int argc, char * argv[])
 	ros::NodeHandle log_h;
 	log_service = log_h.advertiseService("log_cmd", Log_Command);
 
-	//Ultrasonic//
-	ros::Publisher Ultrasonic1_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_L", 10);
-	ros::Publisher Ultrasonic2_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_L", 10);
-	ros::Publisher Ultrasonic3_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_R", 10);
-	ros::Publisher Ultrasonic4_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_R", 10);
-	
 	// PowerSensor parameter read Services
 	ros::NodeHandle param;
     power_parameter_read_service  = param.advertiseService("Power_parameter_read_cmd", Power_parameter_Read_Command);
@@ -970,7 +797,6 @@ int main(int argc, char * argv[])
 	power_data_read_service  = data.advertiseService("Power_data_read_cmd", Power_data_Read_Command);
 	power_adc_read_service  = data.advertiseService("Power_adc_read_cmd", Power_adc_Read_Command);
 	power_version_read_service  = data.advertiseService("Power_version_read_cmd", Power_version_Read_Command);
-	power_sonar_read_service  = data.advertiseService("Power_sonar_read_cmd", Power_sonar_Read_Command);
 
 	//battery & status
 	tetra_battery_publisher = n.advertise<std_msgs::Int32>("tetra_battery", 1);
@@ -1005,54 +831,12 @@ int main(int argc, char * argv[])
 	power_enable_service = IOS_h.advertiseService("Power_enable_cmd", PowerEnableOnOff);
 	power_single_enable_service = IOS_h.advertiseService("Power_single_enable_cmd", PowerSingleEnableOnOff);
 	power_wheel_enable_service = IOS_h.advertiseService("Power_wheel_enable_cmd", PowerWheelEnableOnOff);
-	power_sonar_cmd_service = IOS_h.advertiseService("Power_sonar_start_cmd", Power_sonar_start_Command);
 
 	//Read Conveyor Option Param Read//
 	n.getParam("conveyor_option", m_bConveyor_option);
 	printf("##conveyor_option: %d \n", m_bConveyor_option);
 
-	//Ultrasonic Paramter Setting//////////////////////////////////
-	char frameid1[] = "/Ultrasonic_Down_Left";
-	range_msg1.header.frame_id = tf_prefix_ + frameid1;
-	range_msg1.radiation_type = 0; //Ultrasonic
-	range_msg1.field_of_view = (60.0/180.0) * M_PI; //
-	range_msg1.min_range = Ultrasonic_MIN_range; 
-	range_msg1.max_range = Ultrasonic_MAX_range; 
-
-	char frameid2[] = "/Ultrasonic_Rear_Left";
-	range_msg2.header.frame_id = tf_prefix_ + frameid2;
-	range_msg2.radiation_type = 0; //Ultrasonic
-	range_msg2.field_of_view = (60.0/180.0) * M_PI; //
-	range_msg2.min_range = Ultrasonic_MIN_range;
-	range_msg2.max_range = Ultrasonic_MAX_range;
-
-	char frameid3[] = "/Ultrasonic_Rear_Right";
-	range_msg3.header.frame_id = tf_prefix_ + frameid3;
-	range_msg3.radiation_type = 0; //Ultrasonic
-	range_msg3.field_of_view = (60.0/180.0) * M_PI; //
-	range_msg3.min_range = Ultrasonic_MIN_range;
-	range_msg3.max_range = Ultrasonic_MAX_range;
-
-	char frameid4[] = "/Ultrasonic_Down_Right";
-	range_msg4.header.frame_id = tf_prefix_ + frameid4;
-	range_msg4.radiation_type = 0; //Ultrasonic
-	range_msg4.field_of_view = (60.0/180.0) * M_PI; //
-	range_msg4.min_range = Ultrasonic_MIN_range;
-	range_msg4.max_range = Ultrasonic_MAX_range;
-
-	////////////////////////////////////////////////////////////////////////////////////////////
-	////sonar range to pointcloud//
-	points_1 = n.advertise<sensor_msgs::PointCloud2>("range_points_DL", 10);
-	points_2 = n.advertise<sensor_msgs::PointCloud2>("range_points_RL", 10);
-	points_3 = n.advertise<sensor_msgs::PointCloud2>("range_points_RR", 10);
-	points_4 = n.advertise<sensor_msgs::PointCloud2>("range_points_DR", 10);
-
-	ros::Subscriber sonar0_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_D_L",10,RangeToCloud_D_L);
-	ros::Subscriber sonar1_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_R_L",10,RangeToCloud_R_L);
-	ros::Subscriber sonar2_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_R_R",10,RangeToCloud_R_R);
-	ros::Subscriber sonar3_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_D_R",10,RangeToCloud_D_R);
-
-    	ros::Rate loop_rate(30.0); //30Hz Loop
+    ros::Rate loop_rate(30.0); //30Hz Loop
 	sprintf(port, "/dev/ttyS1");
 	
 	//RS232 Connect
@@ -1068,16 +852,14 @@ int main(int argc, char * argv[])
 
 	//Charge port Enable//
 	dssp_rs232_power_module_set_charging_ready(1);
-	//Ultrasonic On//
-	// dssp_rs232_power_module_set_Ultrasonic(1);
+	
 
-    	while(ros::ok())
+    while(ros::ok())
 	{
         	ros::spinOnce();
 		// calculate measurement time
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
-	//	m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
-		m_iPowerCheck = dssp_rs232_power_module_read_tetra(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput, m_dUltrasonic);
+		m_iPowerCheck = dssp_rs232_power_module_read_tetra(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
 
 		if(m_iPowerCheck < 0)
 		{
@@ -1140,39 +922,6 @@ int main(int argc, char * argv[])
 		gpio_msg.Output7 = m_iOutput[7];
 		GPIO_pub.publish(gpio_msg);
 
-		//m_dUltrasonic * 4ea
-	//	dssp_rs232_power_module_read_Ultrasonic(m_dUltrasonic);
-
-		if(m_dUltrasonic[0] == 0.0)
-			range_msg1.range = Ultrasonic_MAX_range;
-		else
-			range_msg1.range = m_dUltrasonic[0];
-
-		range_msg1.header.stamp = measurement_time;
-		if(m_dUltrasonic[1] == 0.0)
-			range_msg2.range = Ultrasonic_MAX_range;
-		else
-			range_msg2.range = m_dUltrasonic[1];
-
-		range_msg2.header.stamp = measurement_time;
-		if(m_dUltrasonic[2] == 0.0)
-			range_msg3.range = Ultrasonic_MAX_range;
-		else
-			range_msg3.range = m_dUltrasonic[2];
-
-		range_msg3.header.stamp = measurement_time;
-		if(m_dUltrasonic[3] == 0.0)
-			range_msg4.range = Ultrasonic_MAX_range;
-		else
-			range_msg4.range = m_dUltrasonic[3];
-			
-		range_msg4.header.stamp = measurement_time;
-		//Ultrasonic Publish
-		Ultrasonic1_pub.publish(range_msg1);
-		Ultrasonic2_pub.publish(range_msg2);
-		Ultrasonic3_pub.publish(range_msg3);
-		Ultrasonic4_pub.publish(range_msg4);
-
 		if(m_bConveyor_option)
 		{
 			// mo1 추가 필요
@@ -1196,10 +945,8 @@ int main(int argc, char * argv[])
 		}
 
 		loop_rate.sleep();
-    	}
+	}
 
-	//Ultrasonic Off//
-	dssp_rs232_power_module_set_Ultrasonic(0);
 	//RS232 Disconnect
 	dssp_rs232_power_module_destroy();
 
