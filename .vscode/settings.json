@@ -1,6 +1,10 @@
 {
     "files.associations": {
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "limits": "cpp",
+        "utility": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/dkswn/IdeaProjects/TETRA-DSV_M/tetraDS_landmark"
 }
