@@ -4,7 +4,14 @@
         "algorithm": "cpp",
         "chrono": "cpp",
         "limits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "memory": "cpp",
+        "xstring": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "cmath": "cpp",
+        "thread": "cpp",
+        "xlocale": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/dkswn/IdeaProjects/TETRA-DSV_M/tetraDS_landmark"
 }

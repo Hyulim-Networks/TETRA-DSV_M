@@ -40,7 +40,7 @@ rgbd_obstacle_layer1:
   obstacle_range:           1.5   # meters #default:0.8
   origin_z:                 0.0 #0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      1.0   # seconds default_1.0
+  transform_tolerance:      0.2   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      rgbd1_mark rgbd1_clear
