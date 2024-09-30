@@ -126,6 +126,8 @@
 //add... manual backmove Service//
 #include "tetraDS_service/manual_backmove.h" //SRV ... 240125
 
+#include "tetraDS_service/setweightopstacle.h"
+
 #define LOW_BATTERY 15
 #define MAX_RETRY_CNT 999
 #define BUF_LEN 4096
@@ -183,6 +185,8 @@ bool m_flag_Dynamic_Linear_velocity_minor_update = false;
 bool m_flag_setgoal = false;
 //flag
 bool m_flag_PREEMPTED = false;
+
+double Set_Weight_obstacle = 20.0;
 
 
 typedef struct HOME_POSE
@@ -513,6 +517,10 @@ ros::ServiceServer set_ekf_service;
 //add... Manual backmove Service//
 tetraDS_service::manual_backmove manual_backmove_cmd;
 ros::ServiceServer manual_backmove_service; //240125
+
+tetraDS_service::setweightopstacle setweightopstacle_cmd;
+ros::ServiceServer set_weight_obstacle_service; 
+
 
 //**Command srv _ Service Client************************/
 //Usb_cam Service Client//
@@ -4454,6 +4462,26 @@ void InitialposeCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPt
     _pFlag_Value.m_bFlag_Initialpose = true;
 }
 
+bool Set_Weight_obstacle_Command(tetraDS_service::setweightopstacle::Request &req, 
+				                tetraDS_service::setweightopstacle::Response &res)
+{
+    bool bResult = false;
+
+    Dynamic_reconfigure_Teb_Set_DoubleParam("weight_obstacle", (double)req.weight_obstacle);
+    Set_Weight_obstacle = (double)req.weight_obstacle;
+
+    /*
+    float64 weight_obstacle
+    ---
+    float64 weight_obstacle
+    bool command_Result
+    */
+    res.weight_obstacle = req.weight_obstacle;
+    bResult = true;
+    res.command_Result = bResult;
+    return true;
+}
+
 /////*******************************************************************************//////
 
 int main (int argc, char** argv)
@@ -4570,6 +4598,8 @@ int main (int argc, char** argv)
     //add.. Manual Backmove Service ... 240125//
     manual_backmove_service = service_h.advertiseService("manual_backmove_cmd", Manual_Backmove_Command);
     
+    set_weight_obstacle_service = service_h.advertiseService("setweightopstacle_cmd", Set_Weight_obstacle_Command);
+    
     //usb_cam Service Client...
     ros::NodeHandle client_h;
     usb_cam_On_client = client_h.serviceClient<std_srvs::Empty>("usb_cam/start_capture");
@@ -4593,7 +4623,6 @@ int main (int argc, char** argv)
     SetPose_cmd_client = client_h.serviceClient<tetraDS_service::SetPose>("set_pose");
     //cygbot_mark toggle_enabled Service Client//
     toggle_enabled_client = client_h.serviceClient<std_srvs::SetBool>("move_base/local_costmap/cygbot_obstacle_layer/cygbot_mark/toggle_enabled");
-    //Infomation_subscriber//
 
     //Infomation_subscriber//
     ros::NodeHandle nInfo;

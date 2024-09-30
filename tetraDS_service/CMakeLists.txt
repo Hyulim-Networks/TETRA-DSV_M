@@ -62,6 +62,7 @@ add_service_files(
   sethome_id.srv
   setekf.srv
   manual_backmove.srv
+  setweightopstacle.srv
 )
 
 generate_messages(   

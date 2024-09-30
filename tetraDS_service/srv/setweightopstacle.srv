@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+# Set weight_obstacle Command
+
+float64 weight_obstacle
+---
+float64 weight_obstacle
+bool command_Result
+
