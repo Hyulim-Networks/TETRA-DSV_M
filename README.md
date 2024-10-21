@@ -1,6 +1,6 @@
 # TETRA-DSV_M
 
-##   Hyulimnetworks_company TETRA-DSV ROS Dev .. mwcha
+##   Hyulimnetworks TETRA-DSV ROS Dev
 
 ************************
 
@@ -35,6 +35,30 @@
 
 #### virtual_costmap_layer2 : GMahmoud가 만든 가상 레이어 패키지에서 플러그인 이름만 수정한 버전 (local costmap에 활용)
 #### virtual_costmap_layer2: A version with only the plugin name modified from the virtual layer package created by GMahmoud (used for local costmap)
+
+#### Joy_tetra : 로봇을 조이스틱으로 조작하기 위한 패키지
+#### Joy_tetra : Package for operating a robot with a joystick
+
+#### async_web_server_cpp : C++로 만든 비동기 웹/웹소켓 서버
+#### async_web_server_cpp : Asynchronous Web/WebSocket Server in C++
+
+#### web_video_server : 다양한 포맷의 ROS 이미지 토픽의 HTTP 스트리밍 패키지
+#### web_video_server : HTTP Streaming of ROS Image Topics in Multiple Formats
+
+#### cyglidar_d1-0.2.0 : ToF 방식의 시그봇 라이다 패키지
+#### cyglidar_d1-0.2.0 : ToF type cygbot LiDAR package
+
+#### iahrs_driver-master : intelliThings iAHRS IMU(3축 자이로, 가속도, 지자기 센서 통합 AHRS) 패키지
+#### iahrs_driver-master : intelliThings iAHRS IMU (3-axis gyro, acceleration, and geomagnetic sensor integrated AHRS) package
+
+#### realsense-ros : Intel(R) RealSense(TM) 카메라용 ROS 패키지
+#### realsense-ros : ROS package for Intel(R) RealSense(TM) cameras
+
+#### sick_tim-kinetic : SICK TiM 및 SICK MRS 1000 레이저 스캐너용 ROS 드라이버
+#### sick_tim-kinetic : A ROS driver for the SICK TiM and the SICK MRS 1000 laser scanners
+
+#### usb_cam-develop : V4L USB 카메라용 ROS 드라이버
+#### usb_cam-develop : A ROS Driver for V4L USB Cameras
 
 #### sh_files : 로봇의 전체적인 구동을 위한 쉘 스크립트 실행파일
 #### sh_files : Shell script executable file for overall operation of the robot
