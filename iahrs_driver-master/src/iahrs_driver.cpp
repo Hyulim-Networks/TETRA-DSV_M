@@ -14,7 +14,6 @@
 #include "iahrs_driver/pose_velocity_reset.h"
 #include "iahrs_driver/reboot_sensor.h"
 
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +29,7 @@
 #include <dirent.h>
 #include <signal.h>
 
-#define SERIAL_PORT			"/dev/IMU"
+#define SERIAL_PORT		"/dev/IMU"
 #define SERIAL_SPEED		B115200
 
 typedef struct IMU_DATA
@@ -57,12 +56,17 @@ IMU_DATA _pIMU_data;
 
 int serial_fd = -1;
 double time_offset_in_seconds;
-double m_dRoll, m_dPitch, m_dYaw;
+double dSend_Data[10];
+
 sensor_msgs::Imu imu_data_msg;
 //tf_prefix add
 std::string tf_prefix_;
 //single_used TF
 bool m_bSingle_TF_option = false;
+//add wbjin
+std_msgs::Float64 imu_roll;
+std_msgs::Float64 imu_pitch;
+std_msgs::Float64 imu_yaw;
 
 //IMU_service
 ros::ServiceServer all_data_reset_service;
@@ -75,8 +79,6 @@ ros::ServiceServer pose_velocity_reset_service;
 iahrs_driver::pose_velocity_reset pose_velocity_reset_cmd;
 ros::ServiceServer reboot_sensor_service;
 iahrs_driver::reboot_sensor reboot_sensor_cmd;
-
-
 
 int serial_open ()
 {
@@ -212,13 +214,6 @@ void my_handler(sig_atomic_t s)
     exit(1); 
 }
 
-/** reduce angle to between 0 and 360 degrees. */
-
-double reduceHeading(double a) 
-{
-	return remainder(a-180, 360)+180;
-}
-
 //ROS Service Callback////////////////////////////////////////////////////////////////////////
 bool All_Data_Reset_Command(iahrs_driver::all_data_reset::Request  &req, 
 					    	iahrs_driver::all_data_reset::Response &res)
@@ -286,7 +281,6 @@ bool Reboot_Sensor_Command(iahrs_driver::reboot_sensor::Request  &req,
 }
 
 
-/***main loop...*****/
 int main (int argc, char** argv)
 {
 	signal(SIGINT,my_handler);
@@ -294,7 +288,7 @@ int main (int argc, char** argv)
 
 	ros::NodeHandle private_node_handle("~");
     private_node_handle.param<double>("time_offset_in_seconds", time_offset_in_seconds, 0.0);
-
+	
 	ros::param::get("tf_prefix", tf_prefix_);
 
 	tf::TransformBroadcaster br;
@@ -313,11 +307,15 @@ int main (int argc, char** argv)
 	imu_data_msg.orientation_covariance[0] = 0.013*(M_PI/180.0);
 	imu_data_msg.orientation_covariance[4] = 0.011*(M_PI/180.0);
 	imu_data_msg.orientation_covariance[8] = 0.006*(M_PI/180.0);
-	
 
     ros::NodeHandle nh;
 	ros::Publisher imu_data_pub = nh.advertise<sensor_msgs::Imu>("imu/data", 1);
 
+	//add Safety module wbjin... //std_msgs/Float64
+	ros::Publisher euler_roll_pub = nh.advertise<std_msgs::Float64>("euler_roll", 1);
+	ros::Publisher euler_pitch_pub = nh.advertise<std_msgs::Float64>("euler_pitch", 1);
+	ros::Publisher euler_yaw_pub = nh.advertise<std_msgs::Float64>("euler_yaw", 1);
+	
 	//IMU Service///////////////////////////////////////////////////////////////////////////////////////////////
     ros::NodeHandle sh;
     all_data_reset_service = sh.advertiseService("all_data_reset_cmd", All_Data_Reset_Command);
@@ -325,16 +323,13 @@ int main (int argc, char** argv)
 	euler_angle_reset_service = sh.advertiseService("euler_angle_reset_cmd", Euler_Angle_Reset_Command);
 	pose_velocity_reset_service = sh.advertiseService("pose_velocity_reset_cmd", Pose_Velocity_Reset_Command);
 	reboot_sensor_service = sh.advertiseService("reboot_sensor_cmd", Reboot_Sensor_Command);
-
-
+	
 	nh.getParam("m_bSingle_TF_option", m_bSingle_TF_option);
     printf("##m_bSingle_TF_option: %d \n", m_bSingle_TF_option);
 
+    ros::Rate loop_rate(60); //HZ
+    serial_open();
 
-    ros::Rate loop_rate(100); //HZ
-	serial_open();
-
-	double dSend_Data[10];
 	SendRecv("za\n", dSend_Data, 10);	// Euler Angle -> '0.0' Reset
 	usleep(10000);
 
@@ -366,7 +361,7 @@ int main (int argc, char** argv)
 				imu_data_msg.linear_acceleration.y = _pIMU_data.dLinear_acceleration_y = data[1] * 9.80665;
 				imu_data_msg.linear_acceleration.z = _pIMU_data.dLinear_acceleration_z = data[2] * 9.80665;
 			}
-			
+
 			no_data = SendRecv("e\n", data, max_data);	// Read Euler angle
 			if (no_data >= 3) 
 			{
@@ -375,23 +370,33 @@ int main (int argc, char** argv)
 				_pIMU_data.dEuler_angle_Pitch = data[1]*(M_PI/180.0);
 				_pIMU_data.dEuler_angle_Yaw	  = data[2]*(M_PI/180.0);
 
+				//add...
+				imu_roll.data = data[0]; //_pIMU_data.dEuler_angle_Roll;
+				imu_pitch.data = data[1]; //_pIMU_data.dEuler_angle_Pitch;
+				imu_yaw.data = data[2]; //_pIMU_data.dEuler_angle_Yaw;
+
 			}
 
+			//editing_
 			tf::Quaternion orientation = tf::createQuaternionFromRPY(_pIMU_data.dEuler_angle_Roll , _pIMU_data.dEuler_angle_Pitch, _pIMU_data.dEuler_angle_Yaw);
 			// orientation
 			imu_data_msg.orientation.x = orientation[0];
 			imu_data_msg.orientation.y = orientation[1];
 			imu_data_msg.orientation.z = orientation[2];
 			imu_data_msg.orientation.w = orientation[3];
-			
+
 			// calculate measurement time
             ros::Time measurement_time = ros::Time::now() + ros::Duration(time_offset_in_seconds);
-
 			imu_data_msg.header.stamp = measurement_time;
 			imu_data_msg.header.frame_id = tf_prefix_ + "/imu_link";  // "imu_link"
 
 			// publish the IMU data
 			imu_data_pub.publish(imu_data_msg);
+
+			//add publish
+			euler_roll_pub.publish(imu_roll);
+			euler_pitch_pub.publish(imu_pitch);
+			euler_yaw_pub.publish(imu_yaw);
 
 			//Publish tf
 			if(m_bSingle_TF_option)
@@ -403,7 +408,7 @@ int main (int argc, char** argv)
 				//br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "imu_link"));
 				br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), tf_prefix_ + "/base_link", tf_prefix_ + "/imu_link"));
 			}
-			
+
 
 		}
 

@@ -13,5 +13,5 @@
         "thread": "cpp",
         "xlocale": "cpp"
     },
-    "cmake.sourceDirectory": "C:/Users/dkswn/IdeaProjects/TETRA-DSV_M/tetraDS_landmark"
+    "cmake.sourceDirectory": "C:/Users/dkswn/IdeaProjects/tetra/ros/TETRA-DSV_M"
 }

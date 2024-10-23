@@ -4869,7 +4869,6 @@ int main (int argc, char** argv)
                             continue;
                         }
 
-                        //message copy...
                         virtual_obstacle2.list.clear();
                         virtual_obstacle2.list.resize(m_iList_Count);
                         m_iList_Count2 = virtual_obstacle2.list.size();
@@ -4878,7 +4877,6 @@ int main (int argc, char** argv)
                             for(int i=0; i<m_iList_Count2; i++)
                             {
                                 m_iMode_Count = virtual_obstacle.list[i].form.size();
-                                //virtual_obstacle2.list[i].form.clear();
                                 virtual_obstacle2.list[i].form.resize(m_iMode_Count);
                                 m_iMode_Count2 = virtual_obstacle2.list[i].form.size();
                                 if(m_iMode_Count2 > 0)
@@ -4898,7 +4896,6 @@ int main (int argc, char** argv)
                             }
                             virtual_obstacle2_pub.publish(virtual_obstacle2);
                         }
-			            // 231115 add
                         if(m_iList_Count2 == 0){
                             m_bFlag_virtualWallCheck = false;
                         }
@@ -4908,7 +4905,6 @@ int main (int argc, char** argv)
                 {
                     printf("[Error]listener2.waitForTransform Fail & lookupTransform Fail!! \n");
                 }
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         }
         loop_rate.sleep();
