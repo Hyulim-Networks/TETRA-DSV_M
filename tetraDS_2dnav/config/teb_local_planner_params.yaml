@@ -89,14 +89,6 @@ TebLocalPlannerROS:
  selection_viapoint_cost_scale: 1.0
  selection_alternative_time_cost: false
  roadmap_graph_no_samples: 15
- roadmap_graph_area_width: 5
- h_signature_prescaler: 0.5
- h_signature_threshold: 0.1
- obstacle_keypoint_offset: 0.1
- obstacle_heading_threshold: 0.45
- visualize_hc_graph: False
-
- roadmap_graph_no_samples: 15
  roadmap_graph_area_width: 6
  h_signature_prescaler: 1.0
  h_signature_threshold: 0.1
