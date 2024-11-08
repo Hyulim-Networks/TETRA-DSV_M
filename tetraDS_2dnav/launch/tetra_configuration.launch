@@ -111,10 +111,7 @@
 
 <node pkg="tetraDS_TCP" type="tetraDS_TCP" name="tetraDS_TCP" output="screen" args="5100" />
 
-<!-- web_video_server 
+<!-- web_video_server -->
 <node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen" />
--->
+
 </launch>
-
-
-
