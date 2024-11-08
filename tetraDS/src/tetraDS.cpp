@@ -580,6 +580,9 @@ int main(int argc, char * argv[])
 			linear = 0.0;
 			angular = 0.0;
 		}
+		if(m_bumper_data > 0){
+			angular = 0.0;
+		}
 		
 		input_linear  = linear;
 		input_angular = angular;
