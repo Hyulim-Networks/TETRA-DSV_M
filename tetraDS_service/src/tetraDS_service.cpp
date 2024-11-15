@@ -2410,8 +2410,9 @@ void BatteryCallback(const std_msgs::Int32::ConstPtr& msg)
 
 void EMGCallback(const std_msgs::Int32::ConstPtr& msg)
 {
+    bool isChange= _pRobot_Status.m_iCallback_EMG != msg->data;
     _pRobot_Status.m_iCallback_EMG = msg->data;
-    if(_pRobot_Status.m_iCallback_EMG != 0)
+    if(_pRobot_Status.m_iCallback_EMG != 0&& isChange)
     {
         LED_Toggle_Control(1, 10,100,10,1);
         LED_Turn_On(18);
@@ -2431,6 +2432,7 @@ void EMGCallback(const std_msgs::Int32::ConstPtr& msg)
 
 void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
 {
+    bool isChange= _pRobot_Status.m_iCallback_Bumper != msg->data;
     _pRobot_Status.m_iCallback_Bumper = msg->data;
 
     if(_pRobot_Status.m_iCallback_Bumper == 1)
@@ -2447,7 +2449,7 @@ void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
         {
             LED_Toggle_Control(1, 10,100,10,1);
             LED_Turn_On(18);
-            printf("[Bumper] Push Bumper!! _ RED LED On \n");
+            if(isChange) printf("[Bumper] Push Bumper!! _ RED LED On \n");
        
             if(_pFlag_Value.m_bflagGo)
             {
@@ -2464,7 +2466,7 @@ void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
     }
     else if(_pRobot_Status.m_iCallback_Bumper == 2 || _pRobot_Status.m_iCallback_Bumper == 3)
     {
-        printf("[Switch] Push Servo Switch Button !! \n");
+        if(isChange) printf("[Switch] Push Servo Switch Button !! \n");
     }
     else // 230629 ... update loop by mwcha
     { 
