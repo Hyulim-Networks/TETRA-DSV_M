@@ -10,9 +10,7 @@
           -configuration_basename backpack_2d.lua"
        output="screen">
 
-    <remap from="echoes" to="scan"/>
-    <remap from="$(optenv ROS_NAMESPACE)/odom" to="$(optenv ROS_NAMESPACE)/odometry/filtered" />
-    <remap from="imu" to="$(optenv ROS_NAMESPACE)/imu/data" />
+    <remap from="odom" to="odometry/filtered" />
   </node>
 
 <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
