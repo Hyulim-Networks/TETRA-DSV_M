@@ -2585,23 +2585,34 @@ void AR_tagCallback(ar_track_alvar_msgs::AlvarMarkers req)
 }
 
 // add Move_base Die Check
-bool checkNode(std::string& node_name)
+bool checkNode(std::string& node_name, std::string& node_name2)
 {
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
     std::vector<std::string> node_list;
     ros::master::getNodes(node_list);
 
+    bool m_bCheck_flag = false;
+
     for (unsigned int node_list_idx = 0; node_list_idx < node_list.size(); node_list_idx++)
     {
-        if (node_list[node_list_idx] == node_name)
-        return true;
+        if (node_list[node_list_idx] == node_name2) {
+            m_bCheck_flag = true;
+        }
+        if (node_list[node_list_idx] == node_name) {
+            return true;
+        }
     }
 
-    ROS_ERROR("move_base error");
-    cmd->linear.x = 0.0;
-    cmd->angular.z = 0.0;
-    cmdpub_.publish(cmd);
-    _pFlag_Value.m_bFlag_pub = true;
+    if(m_bCheck_flag){
+        // nothing...
+    }else{
+        ROS_ERROR("move_base error");
+        cmd->linear.x = 0.0;
+        cmd->angular.z = 0.0;
+        cmdpub_.publish(cmd);
+        _pFlag_Value.m_bFlag_pub = true;
+    }
+    
     return false;
 }
 
@@ -4435,7 +4446,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
 	_pReset_srv.init_orientation_z = _pTF_pose.poseTFqz;
 	_pReset_srv.init_orientation_w = _pTF_pose.poseTFqw;
     // reset pose
-    Reset_Call_service();
+    //Reset_Call_service();
 
   }
   else if( msgResult->status.status == ABORTED)
@@ -4732,6 +4743,8 @@ int main (int argc, char** argv)
     printf("HOME_dQUATERNION_W: %f \n", _pHomePose.HOME_dQUATERNION_W);
     
     std::string node_name = "/" + tf_prefix_ + "/move_base"; // add move_base Die Check node_name
+    std::string node_name2 = "/" + tf_prefix_ + "/cartographer_node"; // add cartographer_node Die Check node_name
+    
     while(ros::ok())
     {
         ros::spinOnce();
@@ -4740,7 +4753,7 @@ int main (int argc, char** argv)
         nh.getParam("active_map", m_bActive_map_check);
         if(m_bActive_map_check)
         {
-            if(checkNode(node_name) == true)
+            if(checkNode(node_name, node_name2) == true)
             {
                 // ROS_ERROR("move_base alive");
             }   
