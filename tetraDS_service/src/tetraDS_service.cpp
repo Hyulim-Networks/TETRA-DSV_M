@@ -2604,7 +2604,8 @@ bool checkNode(std::string& node_name, std::string& node_name2)
     }
 
     if(m_bCheck_flag){
-        // nothing...
+        _pGoal_pose.goal_positionX = 0.0;
+        _pGoal_pose.goal_positionY = 0.0;
     }else{
         ROS_ERROR("move_base error");
         cmd->linear.x = 0.0;
@@ -2650,7 +2651,6 @@ void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr &msgStatus)
             {
                 setGoal(goal);
             }
-            printf("setGoal call: %.5f, %.5f !!\n", _pGoal_pose.goal_positionX, _pGoal_pose.goal_positionY);
             _pFlag_Value.m_bFlag_pub = false;
         }
     }
