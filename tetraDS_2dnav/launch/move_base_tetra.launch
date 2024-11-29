@@ -6,12 +6,11 @@
   <param name="active_map" type="bool" value="true" />
 
   <include file="$(find tetraDS_2dnav)/launch/teb_move_base.launch">
-   <arg name="namespace" default="$(arg tf_prefix)"/> 
+    <arg name="namespace" default="$(arg tf_prefix)"/> 
   </include>
 
   <arg name="map_file" default="$(find tetraDS_2dnav)/maps/$(arg map_name).yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
-
 
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
@@ -23,10 +22,10 @@
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
 
-<!-- add Landmark load node-->
- <node pkg="tetraDS_landmark" type="tetraDS_landmark_load" name="tetraDS_landmark_load" output="screen" />
+  <!-- add Landmark load node-->
+  <node pkg="tetraDS_landmark" type="tetraDS_landmark_load" name="tetraDS_landmark_load" output="screen" />
 
-<!-- rviz -->
-<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find tetraDS_2dnav)/view_navigation.rviz" />
-
+  <!-- rviz 
+  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find tetraDS_2dnav)/view_navigation.rviz" />
+  -->
 </launch>
