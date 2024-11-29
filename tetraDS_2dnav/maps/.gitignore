@@ -1,4 +1,4 @@
-!office.pgm
-!office.yaml
 *.pgm
 *.yaml
+!office.pgm
+!office.yaml
