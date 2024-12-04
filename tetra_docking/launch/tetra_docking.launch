@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-
-<node pkg="tetra_docking" type="tetra_docking" name="tetra_docking" output="screen" />
-
-</launch>
