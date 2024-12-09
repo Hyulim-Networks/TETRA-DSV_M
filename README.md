@@ -1,13 +1,75 @@
 # TETRA-DSV_M
 
-##   Hyulimnetworks TETRA-DSV ROS Dev
+![1](https://user-images.githubusercontent.com/103166594/220823974-8fde85da-4c52-4bb3-9638-9e6d5bca1c39.png)
+
+####   Hyulimnetworks TETRA-DSV ROS Dev
 
 ************************
 
-### 모든 tetra-DSV 는 M 모델을 기준으로 튜닝되었습니다.
+## 설치방법
+- 우분투 18.04 설치
+
+
+- ROS melodic 설치
+
+``` bash
+# source.list 설정
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+# keys 설정
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+# 패키지 목록을 최신화 
+sudo apt update
+
+# ROS melodic 설치
+sudo apt install ros-melodic-desktop-full
+
+# 환경변수 설정
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# 의존성 패키지 빌드 설치
+sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+
+# rosdep 초기화
+sudo rosdep init
+rosdep update
+
+# tetra 패키지 설치 및 의존성 패키지 설치
+mkdir ~/catkin_ws
+cd ~/catkin_ws
+git clone https://github.com/Hyulim-Networks/TETRA-DSV_M.git
+mv ~/catkin_ws/TETRA-DSV_M ~/catkin_ws/src
+cd ~/catkin_ws
+rosdep install --from-paths src --ignore-src -r -y
+sudo apt-get install ros-melodic-move-base
+sudo apt-get install ros-melodic-navigation
+sudo apt-get install ros-melodic-serial
+sudo apt-get install ros-melodic-rosbridge-server
+sudo apt-get install ros-melodic-teb-local-planner
+sudo apt-get install ros-melodic-spatio-temporal-voxel-layer
+sudo apt-get install ros-melodic-ar-track-alvar
+sudo apt-get install ros-melodic-rgbd-launch
+sudo apt-get install ros-melodic-tf2-web-republisher
+sudo apt-get install ros-melodic-robot-localization
+sudo apt-get install ros-melodic-joy
+sudo apt install rapidjson-dev
+
+# 시리얼 통신 권한 설정
+sudo chmod 666 /dev/ttyS0
+sudo chmod 666 /dev/ttyS1
+
+```
+
+- 패키지 설치
+- 프로젝트 빌드
+- 프로젝트 실행
 
 ************************
-     
+
+## 패키지 설명
+
 #### tetraDS : TETRA-DSV구동 보드와의 Serial통신을 통하여 Motor의 구동을 담당하는 패키지 (RS232통신 사용)
 
 #### tetraDS_description : TETRA-DSV의 URDF가 포함된 패키지 (gazebo 지원 X)
@@ -46,4 +108,3 @@
 
 <br>
 
-![1](https://user-images.githubusercontent.com/103166594/220823974-8fde85da-4c52-4bb3-9638-9e6d5bca1c39.png)
