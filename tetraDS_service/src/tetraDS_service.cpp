@@ -4435,6 +4435,8 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
 
     m_flag_PREEMPTED = false;
     _pFlag_Value.m_bFlag_pub = false;
+    _pGoal_pose.goal_positionX = 0.0;
+    _pGoal_pose.goal_positionY = 0.0;
 
 	//position
 	_pReset_srv.init_position_x = _pTF_pose.poseTFx;
@@ -4463,6 +4465,8 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     ROS_INFO("Goto Cancel call");
     GotoCancel_pub.publish(goto_goal_id);
     _pFlag_Value.m_bFlag_pub = false;
+    _pGoal_pose.goal_positionX = 0.0;
+    _pGoal_pose.goal_positionY = 0.0;
 
     if(m_iRetry_cnt >= MAX_RETRY_CNT)
     {
