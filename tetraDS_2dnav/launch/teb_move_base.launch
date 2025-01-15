@@ -34,12 +34,11 @@
     <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
     <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
     <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
-    <!--
+
+    <!-- 멀티관제시 주석 해제
     <param name="global_costmap/static_map/map_topic" value="/map"/>
     <param name="local_costmap/static_map/map_topic" value="/map"/>
      -->
-
   </node>
   
 </launch>
-

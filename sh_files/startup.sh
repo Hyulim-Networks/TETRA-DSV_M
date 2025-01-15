@@ -20,7 +20,7 @@ rosclean purge -y
 sleep 1
 sudo pm2 stop all
 cd /home/tetra/work/tetra-single-api
-sudo pm2 start npm -- run start $ROS_NAMESPACE
+sudo pm2 start npm -- run start $ROS_NAMESPACE # 멀티관제시 주석처리
 
 roslaunch tetraDS_2dnav tetra_configuration.launch
 

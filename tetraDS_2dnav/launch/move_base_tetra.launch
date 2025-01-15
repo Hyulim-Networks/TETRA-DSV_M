@@ -9,8 +9,10 @@
     <arg name="namespace" default="$(arg tf_prefix)"/> 
   </include>
 
+  <!-- 멀티관제시 주석처리 시작-->
   <arg name="map_file" default="$(find tetraDS_2dnav)/maps/$(arg map_name).yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <!-- 멀티관제시 주석처리 끝-->
 
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
