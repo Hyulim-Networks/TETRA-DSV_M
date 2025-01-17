@@ -88,10 +88,7 @@
 
   <!--realsense_Point Cloud data -->
   <include file = "$(find realsense2_camera)/launch/rs_pointcloud_front.launch"/>
-  <!--<include file = "$(find tetraDS_2dnav)/launch/timed_rgbd.launch"/>
-  <include file="$(find tetraDS_2dnav)/launch/DepthimageToScan.launch"/>-->
 
-  <!--Cygbot LiDAR-->
   <!--Cygbot LiDAR-->
   <node name="cyglidar_publisher" pkg="cyglidar_d2_ros1" type="cyglidar_publisher" output="screen">
 		<param name="port_number"       	value="/dev/cyglidar"/>
@@ -114,10 +111,20 @@
 	</node>
 
   <node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_republisher" output="screen" />
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" ></include>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" ></include> <!-- 멀티관제시 주석 -->
 
   <node pkg="tetraDS_TCP" type="tetraDS_TCP" name="tetraDS_TCP" output="screen" args="5100" />
 
   <!-- web_video_server -->
   <node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen" />
+
+  <!-- 멀티관제시 주석 해제 
+  <node pkg="fkie_master_discovery" type="master_discovery" name="master_discovery"  output="screen">
+    <rosparam param="robot_hosts">['192.168.33.222']</rosparam>
+  </node>
+
+  <node pkg="fkie_master_sync" type="master_sync" name="master_sync" output="screen">
+    <rosparam param="sync_hosts">['192.168.33.222']</rosparam>
+    <rosparam param="robot_hosts">['192.168.33.222']</rosparam>
+  </node> -->
 </launch>
