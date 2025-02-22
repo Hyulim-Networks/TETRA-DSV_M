@@ -311,7 +311,7 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 	// Charging Mode Status
 	*mode_status = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
 
-	//GPIO _add 2021.10.22 wbjin
+	//GPIO 
 	int iInput = (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
 	decimal2binary(iInput, Input_binary);
 	int iOutput = (packet_buf[14] & 0xff) | ((packet_buf[13] << 8) & 0xff00);
@@ -360,7 +360,7 @@ int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurren
 	// Charging Mode Status
 	*mode_status = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
 
-	//GPIO _add 2021.10.22 wbjin
+	//GPIO 
 	int iInput = (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
 	decimal2binary(iInput, Input_binary);
 	int iOutput = (packet_buf[14] & 0xff) | ((packet_buf[13] << 8) & 0xff00);

@@ -23,7 +23,9 @@
         "vector": "cpp",
         "xhash": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "cstdio": "cpp",
+        "xlocnum": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/dkswn/IdeaProjects/tetra/ros/TETRA-DSV_M"
 }

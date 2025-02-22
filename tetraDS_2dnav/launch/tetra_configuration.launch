@@ -49,7 +49,20 @@
     <param name="m_bSingle_TF_option" type="bool" value="false" /> <!--true-->
 
   <!--TETRA bringup-->
-  <node pkg="tetraDS" type="tetraDS" name="tetraDS" output="screen" />
+  <node pkg="tetraDS" type="tetraDS" name="tetraDS" output="screen" >
+    <param name="port" type="string" value="/dev/ttyS0" />
+    <param name="frame_id" type="string" value="odom" />
+    <param name="child_frame_id" type="string" value="base_footprint" />
+    <param name="f_acc" type="double" value="0.005" />
+    <param name="f_dec" type="double" value="0.005" />
+    <param name="b_acc" type="double" value="0.005" />
+    <param name="b_acc_add_above_zero" type="double" value="0.0" />
+    <param name="b_dec" type="double" value="0.005" />
+    <param name="angular_acc_dec" type="double" value="0.02" />
+    <param name="wheel_radius" type="int" value="1027" />
+    <param name="wheel_distance" type="int" value="4420" />
+  </node>
+
   <!--TETRA Power&Sensor Board -->
   <node pkg="tetraDS_interface" type="tetraDS_interface" name="tetraDS_interface" output="screen" />
   <!-- TETRA service -->

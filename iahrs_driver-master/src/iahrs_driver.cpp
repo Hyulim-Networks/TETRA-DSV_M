@@ -63,7 +63,7 @@ sensor_msgs::Imu imu_data_msg;
 std::string tf_prefix_;
 //single_used TF
 bool m_bSingle_TF_option = false;
-//add wbjin
+
 std_msgs::Float64 imu_roll;
 std_msgs::Float64 imu_pitch;
 std_msgs::Float64 imu_yaw;
@@ -311,7 +311,7 @@ int main (int argc, char** argv)
     ros::NodeHandle nh;
 	ros::Publisher imu_data_pub = nh.advertise<sensor_msgs::Imu>("imu/data", 1);
 
-	//add Safety module wbjin... //std_msgs/Float64
+	//add Safety module  //std_msgs/Float64
 	ros::Publisher euler_roll_pub = nh.advertise<std_msgs::Float64>("euler_roll", 1);
 	ros::Publisher euler_pitch_pub = nh.advertise<std_msgs::Float64>("euler_pitch", 1);
 	ros::Publisher euler_yaw_pub = nh.advertise<std_msgs::Float64>("euler_yaw", 1);

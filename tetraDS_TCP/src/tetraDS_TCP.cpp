@@ -65,9 +65,7 @@
 #include "tetraDS_TCP/dockingcontrol.h" //SRV
 #include "tetraDS_TCP/power_set_outport.h" //SRV
 #include "tetraDS_TCP/power_get_io_status.h" //SRV
-//add...230405_wbjin
 #include "tetraDS_TCP/power_set_single_outport.h" //SRV
-//add...240205 mwcha
 #include "tetraDS_TCP/manual_backmove.h" //SRV
 
 #define BUF_LEN 4096
@@ -482,7 +480,6 @@ bool Set_Output(int Output0, int Output1, int Output2, int Output3, int Output4,
 
 }
 
-//add_230405_wbjin
 bool Set_Single_Output(int Output_id, int iValue)
 {
     bool bResult = false;
@@ -496,7 +493,6 @@ bool Set_Single_Output(int Output_id, int iValue)
 
 }
 
-//add 240205
 bool Manual_Movement(double cmd_vel_x, double Target_distance)
 {
     bool bResult = false;
@@ -814,7 +810,6 @@ int main(int argc, char* argv[])
     ros::NodeHandle nTest;
     ros::Subscriber Test_sub = nTest.subscribe("/rviz_visual_tools_gui", 10, TESTCallback);
 
-    //add_230926_mwcha
     cmdpub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
 
     ////tetraDS ServiceClient///////////////////////////////////////////////////////////////////////////////////

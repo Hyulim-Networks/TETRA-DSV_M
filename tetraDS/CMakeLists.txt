@@ -11,7 +11,10 @@ find_package(catkin REQUIRED
   tf
   nav_msgs
   geometry_msgs
+  dynamic_reconfigure
 )
+
+generate_dynamic_reconfigure_options(cfg/tetra.cfg)
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -37,7 +40,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES tetraDS
-  CATKIN_DEPENDS roscpp message_generation message_runtime
+  CATKIN_DEPENDS roscpp message_generation message_runtime dynamic_reconfigure
 )
 
 ###########

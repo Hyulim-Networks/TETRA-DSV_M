@@ -4,7 +4,7 @@
   <version>0.0.1</version>
   <description>The tetraDS package</description>
 
-  <maintainer email="wbjin@hyulimrobot.com">Jinwookbin</maintainer>
+  <maintainer email="Johny@hyulimnetworks.com">Johny</maintainer>
 
   <license>BSD</license>
 
@@ -22,7 +22,6 @@
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   
-  
   <build_depend>tf</build_depend>
   <build_export_depend>tf</build_export_depend>
   <exec_depend>tf</exec_depend>
@@ -35,6 +34,10 @@
   <build_export_depend>geometry_msgs</build_export_depend>
   <exec_depend>geometry_msgs</exec_depend>
   
+  
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_export_depend>dynamic_reconfigure</build_export_depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

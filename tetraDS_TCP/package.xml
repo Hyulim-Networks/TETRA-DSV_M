@@ -4,11 +4,9 @@
   <version>0.0.1</version>
   <description>The tetraDS_TCP package</description>
 
-  <maintainer email="wbjin@hyulimrobot.com">wbjin</maintainer>
-
+  <maintainer email="Johny@hyulimnetworks.com">Johny</maintainer>
 
   <license>BSD</license>
-
 
   <buildtool_depend>catkin</buildtool_depend>
 

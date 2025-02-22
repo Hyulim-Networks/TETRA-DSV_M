@@ -1,5 +1,4 @@
 // TETRA_DS Service ROS Package //
-// NEW _ M model of TETRA-DSV Version_240315 mwcha  //
 #include <ros/ros.h>
 #include <ros/master.h> // add_move_base die check
 #include <ros/this_node.h> // add_move_base die check
@@ -234,7 +233,7 @@ typedef struct FALG_VALUE
     //PCL obstacle Check//
     bool m_bFlag_Obstacle_PCL1 = false;
     bool m_bFlag_Obstacle_PCL2 = false;
-    //Cygbot Check// add 240129 mwcha
+    //Cygbot Check// 
     bool m_bFlag_Obstacle_cygbot = false;
     //Error Flag//
     bool m_bumperhit_flag = false;
@@ -343,7 +342,7 @@ typedef struct ROBOT_STATUS
     int HOME_ID = 0; //Docking ID Param Read//
     int CONVEYOR_ID = 0;
     int CONVEYOR_MOVEMENT = 0; // 0: nomal , 1: Loading , 2: Unloading\
-    //add..Total Distance ... 240129 mwcha
+    //add..Total Distance 
     double m_cmd_vel = 0.0;
     double m_backmove_cmd = 0.0;
     double m_dTotal_Distance = 0.0;
@@ -551,7 +550,7 @@ ros::ServiceClient clear_costmap_client;
 ros::ServiceClient SetPose_cmd_client;
 tetraDS_service::SetPose setpose_srv;
 geometry_msgs::PoseWithCovarianceStamped set_pose;
-//local_costmap toggle_enabled Service Client// add 240129 mwcha
+//local_costmap toggle_enabled Service Client//
 ros::ServiceClient toggle_enabled_client;
 std_srvs::SetBool toggle_enabled;
 
@@ -591,7 +590,7 @@ ros::ServiceClient reboot_sensor_cmd_client;
 tetraDS_service::reboot_sensor reboot_sensor_srv;
 
 //************************************************************************************************************************//
-//Cygbot local costmap toggle_enabled flag// 240129 mwcha add
+//Cygbot local costmap toggle_enabled flag// 
 bool m_bToggle_enabled_flag1 = false;
 bool m_bToggle_enabled_flag2 = false;
 //************************************************************************************************************************//
@@ -745,7 +744,7 @@ void PCL2_Callback(const sensor_msgs::LaserScan::ConstPtr &msg)
         _pFlag_Value.m_bFlag_Obstacle_PCL2 = false;
 }
 
-void Cygbot_Callback(const sensor_msgs::LaserScan::ConstPtr &msg) // 240129 mwcha add
+void Cygbot_Callback(const sensor_msgs::LaserScan::ConstPtr &msg) // 
 {
     int size = msg->ranges.size();
     //printf("cygbot_size: %d \n",size);
@@ -1031,7 +1030,7 @@ bool Setspeed_Command(tetraDS_service::setmaxspeed::Request &req,
 	return true;
 }
 
-void cmd_vel_Callback(const geometry_msgs::Twist::ConstPtr& msg) //adjust because tetraDS_M new version use cygbot lidar ... 240129 mwcha
+void cmd_vel_Callback(const geometry_msgs::Twist::ConstPtr& msg) //adjust because tetraDS_M new version use cygbot lidar
 {
     _pDynamic_param.m_linear_vel  = msg->linear.x;
     _pDynamic_param.m_angular_vel = msg->angular.z;
@@ -1092,11 +1091,11 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
             {
-                if(_pDynamic_param.m_linear_vel >= 0.3)
+                if(_pDynamic_param.m_linear_vel >= 0.2)
                 {
                     if(!m_flag_Dynamic_TebMarkers_major_update)
                     {
-                        Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
+                        Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.2);
                         m_flag_Dynamic_TebMarkers_major_update = true;
                         _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
                     }
@@ -1137,11 +1136,11 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
     }
     if(_pFlag_Value.m_bCorneringFlag)
     {
-        if(m_dDelta_Value >= 3.5)
+        if(m_dDelta_Value >= 13.5)
         {
             if(!m_flag_Dynamic_Teblocalplan_major_update)
             {
-                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.5); //0.35
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.35);
                 m_flag_Dynamic_Teblocalplan_major_update = true;
                 m_flag_Dynamic_Teblocalplan_minor_update = false;
                 _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
@@ -2039,7 +2038,7 @@ bool Patrol_Conveyor_Command(tetraDS_service::patrol_conveyor::Request &req,
 	return true;
 }
 
-//add.. Manual_Backmove_Command ... 240125
+// Manual_Backmove_Command 
 bool Manual_Backmove_Command(tetraDS_service::manual_backmove::Request &req, 
 				             tetraDS_service::manual_backmove::Response &res)
 {
@@ -2468,7 +2467,7 @@ void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
     {
         if(isChange) printf("[Switch] Push Servo Switch Button !! \n");
     }
-    else // 230629 ... update loop by mwcha
+    else 
     { 
         memcpy(&pointcloud_.data[0 * pointcloud_.point_step + pointcloud_.fields[0].offset], &P_INF_X, sizeof(float));
         memcpy(&pointcloud_.data[0 * pointcloud_.point_step + pointcloud_.fields[1].offset], &P_INF_Y, sizeof(float));
@@ -2500,7 +2499,7 @@ void SensorCallback(const std_msgs::Int32::ConstPtr& msg)
     _pRobot_Status.m_iConveyor_Sensor_info = msg->data;
 }
 
-//add.. Total Distance Callback ... 240129 mwcha
+// Total Distance Callback 
 void TotalDistance_Callback(const std_msgs::Float32::ConstPtr& msg)
 {
     _pRobot_Status.m_dTotal_Distance = msg->data;
@@ -3682,64 +3681,7 @@ bool DeleteData_All_Command(tetraDS_service::deletedataall::Request  &req,
     res.command_Result = bResult;
     return true;
 }
-void backmovement() // add 240129 mwcha
-{
-    geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
-    printf("Target Distance = %.3f \n", _pRobot_Status.m_dGoal_Distance);
-    printf("SUM = %.3f \n", _pRobot_Status.m_dTotal_Distance +_pRobot_Status.m_backmove_cmd);
-    printf("_pRobot_Status.m_dTotal_Distance = %.3f \n", _pRobot_Status.m_dTotal_Distance);
 
-    if(_pRobot_Status.m_dTotal_Distance < _pRobot_Status.m_dGoal_Distance)
-    {
-        if(_pRobot_Status.m_cmd_vel < 0) // - move
-        {
-            if(_pFlag_Value.m_bFlag_Obstacle_cygbot)
-            {
-                cmd->linear.x =  0.0; 
-                cmd->angular.z = 0.0;
-                cmdpub_.publish(cmd);
-                        
-            }
-            else
-            {
-                cmd->linear.x = _pRobot_Status.m_cmd_vel; 
-                cmd->angular.z = 0.0;
-                cmdpub_.publish(cmd);
-                        
-            }
-        }
-        else // + move
-        {
-            if(_pFlag_Value.m_bFlag_Obstacle_Center)
-            {
-                cmd->linear.x =  0.0; 
-                cmd->angular.z = 0.0;
-                cmdpub_.publish(cmd);
-                        
-            }
-            else
-            {
-                cmd->linear.x = _pRobot_Status.m_cmd_vel; 
-                cmd->angular.z = 0.0;
-                cmdpub_.publish(cmd);
-                        
-            }
-
-        }
-        printf("_pRobot_Status.m_cmd_vel; = %.3f \n", _pRobot_Status.m_cmd_vel);
-        cmd->linear.x = _pRobot_Status.m_cmd_vel; 
-        cmd->angular.z = 0.0;
-        cmdpub_.publish(cmd);  
-    }
-    else
-    {
-            cmd->linear.x =  0.0; 
-            cmd->angular.z = 0.0;
-            cmdpub_.publish(cmd);
-            ex_iDocking_CommandMode = 0;
-    }
-
-}
 void *DockingThread_function(void *data)
 {
     while(1)
@@ -4541,7 +4483,7 @@ int main (int argc, char** argv)
     ros::Subscriber pcl1_sub = nh.subscribe("pcl_1", 100, PCL1_Callback);
     ros::Subscriber pcl2_sub = nh.subscribe("pcl_2", 100, PCL2_Callback);
     //Cygbot LiDAR to scan subscriber//
-    ros::Subscriber cygbot_sub = nh.subscribe("scan_laser", 100, Cygbot_Callback); //Rear Cygbot LiDAR ... 240129 mwcha
+    ros::Subscriber cygbot_sub = nh.subscribe("scan_laser", 100, Cygbot_Callback); //Rear Cygbot LiDAR 
     //virtual costmap
     virtual_obstacle_pub = nh.advertise<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100);
     virtual_obstacle2_pub = nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
@@ -4662,7 +4604,7 @@ int main (int argc, char** argv)
     ros::Subscriber loadcell_status = nInfo.subscribe<std_msgs::Float64>("conveyor_loadcell", 1, LoadcellCallback);
     ros::Subscriber sensor_status = nInfo.subscribe<std_msgs::Int32>("conveyor_sensor", 1, SensorCallback);
     
-    //add..Total Distance sub ... 240129 mwcha
+    //add..Total Distance sub 
     ros::Subscriber total_distance_sub = nInfo.subscribe<std_msgs::Float32>("total_distance", 10, TotalDistance_Callback);
 
     //bumper_data to Pointcloud2_data///

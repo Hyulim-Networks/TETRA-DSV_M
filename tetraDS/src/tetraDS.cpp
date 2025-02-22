@@ -7,6 +7,9 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Float32.h>
 
+#include <dynamic_reconfigure/server.h>
+#include <tetraDS/TetraDsConfig.h>
+
 //Custom Service//
 #include <tetraDS/parameter_read.h>
 #include <tetraDS/parameter_write.h>
@@ -29,10 +32,6 @@ extern "C"
 #include <math.h>
 #include <unistd.h>
 using namespace std;
-
-#define WHEEL_RADIUS 0.1027 //m
-#define WHEEL_DISTANCE 0.4420 //m ... update by mwcha_231031
-#define TREAD_WIDTH 0.04 //m
 
 //serial
 int com_port = 0;
@@ -83,11 +82,12 @@ tetraDS::angular_position_move angular_move_cmd;
 bool m_bEKF_option = false;
 bool m_bForwardCheck = false;
 
-//add ... 240125 mwcha
 double ex_dBefore_Position_x = 0.0;
 double ex_dBefore_Position_y = 0.0;
 double ex_dIncrement_Distance = 0.0;
 double ex_dTotal_Distance = 0.0;
+
+tetraDS::TetraDsConfig config_;
 
 class TETRA
 {
@@ -161,18 +161,18 @@ class TETRA
         	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(coordinates[2]);
 		
         	geometry_msgs::TransformStamped odom_trans;
-		if(!m_bEKF_option) //add...ekf_localization option _ wbjin
+		if(!m_bEKF_option) // ekf_localization option 
 		{
 			odom_trans.header.stamp = current_time;
 			if(has_prefix)
 			{
-				odom_trans.header.frame_id = tf_prefix_ + "/odom"; //tf_prefix add
-				odom_trans.child_frame_id = tf_prefix_ + "/base_footprint"; //tf_prefix add
+				odom_trans.header.frame_id = tf_prefix_ + "/" + config_.frame_id; //tf_prefix add
+				odom_trans.child_frame_id = tf_prefix_ + "/" + config_.child_frame_id; //tf_prefix add
 			} 
 			else 
 			{
-				odom_trans.header.frame_id = "odom";
-				odom_trans.child_frame_id = "base_footprint";
+				odom_trans.header.frame_id = config_.frame_id;
+				odom_trans.child_frame_id = config_.child_frame_id;
 			}
 			odom_trans.transform.translation.x = coordinates[0];
 			odom_trans.transform.translation.y = coordinates[1];
@@ -185,13 +185,13 @@ class TETRA
 		odom.header.stamp = current_time;
 		if(has_prefix)
 		{
-			odom.header.frame_id = tf_prefix_ + "/odom"; //tf_prefix add
-			odom.child_frame_id = tf_prefix_ + "/base_footprint"; //tf_prefix add
+			odom.header.frame_id = tf_prefix_ + "/" + config_.frame_id; //tf_prefix add
+			odom.child_frame_id = tf_prefix_ + "/" + config_.child_frame_id; //tf_prefix add
 		} 
 		else 
 		{
-			odom.header.frame_id = "odom";
-			odom.child_frame_id = "base_footprint";
+			odom.header.frame_id = config_.frame_id;
+			odom.child_frame_id = config_.child_frame_id;
 		}
 		//pose
 		odom.pose.pose.position.x= coordinates[0];
@@ -443,17 +443,20 @@ double direction_to_diwheelrotation_diff(double wheel_distance, double wheel_dia
 
 void speed_to_diwheel_rpm(double meter_per_sec, double rad_per_sec, double * left_rpm, double * right_rpm)
 {
-	double linearRotate = distance_to_wheelrotation(2.0*WHEEL_RADIUS, meter_per_sec);
-	double angularRorate = direction_to_diwheelrotation_diff(WHEEL_DISTANCE/2.0, 2.0*WHEEL_RADIUS, rad_per_sec);
+	double wheel_radius = config_.wheel_radius/10000.0;
+	double wheel_distance = config_.wheel_distance/10000.0;
+
+	double linearRotate = distance_to_wheelrotation(2.0*wheel_radius, meter_per_sec);
+	double angularRorate = direction_to_diwheelrotation_diff(wheel_distance/2.0, 2.0*wheel_radius, rad_per_sec);
 
 	 *left_rpm = (linearRotate - angularRorate) * 60.0;
 	 *right_rpm = (linearRotate + angularRorate) * 60.0;
-
 }
 
 double RPM_to_ms(double d_rpm)
 {
-	return WHEEL_RADIUS*2.0*M_PI*(d_rpm/60.0);
+	double wheel_radius = config_.wheel_radius/10000.0;
+	return wheel_radius*2.0*M_PI*(d_rpm/60.0);
 }
 
 void SetMoveCommand(double fLinear_vel, double fAngular_vel)
@@ -467,6 +470,11 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 	int iData1 = 1000.0 * RPM_to_ms(Left_Wheel_vel);
 	int iData2 = 1000.0 * RPM_to_ms(Right_Wheel_vel);
 	dssp_rs232_drv_module_set_velocity(iData1, iData2);
+}
+
+void update_config(tetraDS::TetraDsConfig &new_config, uint32_t level)
+{
+  config_ = new_config;
 }
 
 //Main Loop//
@@ -493,7 +501,7 @@ int main(int argc, char * argv[])
 	//acceleration_velue//
 	ros::Subscriber acc_sub = n.subscribe("accel_vel",10,accelCallback);
 	//Joystick//
-    	ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
+    ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
 	ros::Subscriber vjoy_sub = vjoy.subscribe<geometry_msgs::Twist>("virtual_joystick/cmd_vel", 10, vjoyCallback);
 	//Pose Reset//_test
 	ros::Subscriber PoseReset = nReset.subscribe<std_msgs::Int32>("PoseRest",10, PoseResetCallback);
@@ -518,7 +526,6 @@ int main(int argc, char * argv[])
 	right_error_code_publisher = nemg.advertise<std_msgs::Int32>("right_error_code", 1);
 	std_msgs::Int32 right_error_code;
 
-	//add ... Total Distace ... 240125 mwcha
 	ros::Publisher total_distance_publisher;
 	total_distance_publisher = nemg.advertise<std_msgs::Float32>("total_distance", 1);
 	std_msgs::Float32 total_distance;
@@ -532,9 +539,14 @@ int main(int argc, char * argv[])
 
 	ros::Rate loop_rate(30.0); //default: 30HZ
 
-	sprintf(port, "/dev/ttyS0");
+	dynamic_reconfigure::Server<tetraDS::TetraDsConfig> dynamic_reconfigure_server_;
+	dynamic_reconfigure_server_.setCallback(update_config);
+
+	std::string port_str;
+	n.param<std::string>("port", port_str, "/dev/ttyS0");
+
 	//RS232 Connect
-	if(dssp_rs232_drv_module_create(port, 200) == 0)
+	if(dssp_rs232_drv_module_create(port_str.c_str(), 200) == 0)
 	{
 		printf("TETRA_DS4_rs232 Port Open Success\n");
 	}
@@ -561,9 +573,9 @@ int main(int argc, char * argv[])
 	usleep(10000);
 	//emg flag//
 	bool m_bflag_emg = false;
-	//bumper flag ... add by mwcha
+	//bumper flag 
 	bool m_bflag_bumper = false;
-	//
+	
 	printf("□■■■■■■■□■■■■■■□□■■■■■■■□■■■■■■□□□□□□■□□□□\n");
 	printf("□□□□■□□□□■□□□□□□□□□□■□□□□■□□□□□■□□□□□■□□□□\n");
 	printf("□□□□■□□□□■□□□□□□□□□□■□□□□■□□□□□■□□□□■□■□□□\n");
@@ -600,12 +612,12 @@ int main(int argc, char * argv[])
 		
 			if(input_linear > control_linear)
 			{
-				control_linear = min(input_linear, control_linear + 0.01);  //10mm++
+				control_linear = min(input_linear, control_linear + config_.f_acc);  
 	
 			}
 			else if(input_linear < control_linear)
 			{
-				control_linear = max(input_linear, control_linear - 0.05);  //50mm --
+				control_linear = max(input_linear, control_linear - config_.f_dec);  
 
 			}	
 			else
@@ -617,16 +629,16 @@ int main(int argc, char * argv[])
 		{
 			if(input_linear < control_linear)
 			{
-				control_linear = max(input_linear, control_linear - 0.01);
+				control_linear = max(input_linear, control_linear - config_.b_acc);
 				if(control_linear > 0)
 				{
-					control_linear = max(input_linear, control_linear - 0.05);  //50mm --
+					control_linear = max(input_linear, control_linear - config_.b_acc_add_above_zero);  
 				}
 		
 			}
 			else if(input_linear > control_linear)
 			{
-				control_linear = min(input_linear, control_linear + 0.05);
+				control_linear = min(input_linear, control_linear + config_.b_dec);
 
 			}
 			else
@@ -634,9 +646,24 @@ int main(int argc, char * argv[])
 				control_linear = input_linear;
 			}
 		}
+
+		if(input_angular > control_angular)
+		{
+			control_angular = min(input_angular, control_angular + config_.angular_acc_dec); 
+
+		}
+		else if(input_angular < control_angular)
+		{
+			control_angular = max(input_angular, control_angular - config_.angular_acc_dec);  
+
+		}	
+		else
+		{
+			control_angular = input_angular;
+		}
 		
 		//control_linear = input_linear;
-		control_angular = input_angular;
+		//control_angular = input_angular;
 
 		//EMG Check Loop
 		emg_state.data = m_emg_state;
@@ -658,14 +685,16 @@ int main(int argc, char * argv[])
 		tetra.coordinates[1] = (m_dY_pos /1000.0);
 		tetra.coordinates[2] = m_dTheta * (M_PI/1800.0);
 
-		//add ... Distance calc ... 240125 mwcha
 		ex_dIncrement_Distance = sqrt(((tetra.coordinates[0] - ex_dBefore_Position_x)*(tetra.coordinates[0] - ex_dBefore_Position_x))+((tetra.coordinates[1] - ex_dBefore_Position_y)*(tetra.coordinates[1] - ex_dBefore_Position_y)));
 		ex_dTotal_Distance = ex_dTotal_Distance + ex_dIncrement_Distance;                    
 		ex_dBefore_Position_x = tetra.coordinates[0];
 		ex_dBefore_Position_y = tetra.coordinates[1];
 		// total Distance pub
 		total_distance.data = ex_dTotal_Distance;
-		total_distance_publisher.publish(total_distance);
+		
+		if(config_.use_total_distance_pub){
+			total_distance_publisher.publish(total_distance);
+		}
 		
 		if(!bPosition_mode_flag) //Velocity mode only
 		{
