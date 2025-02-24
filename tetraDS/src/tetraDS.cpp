@@ -33,9 +33,6 @@ extern "C"
 #include <unistd.h>
 using namespace std;
 
-//serial
-int com_port = 0;
-char port[16] = {0,};
 //cmd_vel
 double input_linear=0.0, input_angular = 0.0;
 double control_linear=0.0, control_angular = 0.0;
