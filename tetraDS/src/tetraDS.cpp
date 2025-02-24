@@ -599,6 +599,18 @@ int main(int argc, char * argv[])
 		input_linear  = linear;
 		input_angular = angular;
 
+		n.getParam("tetraDS/f_acc", config_.f_acc);
+		n.getParam("tetraDS/f_dec", config_.f_dec);
+		n.getParam("tetraDS/b_acc", config_.b_acc);
+		n.getParam("tetraDS/b_acc_add_above_zero", config_.b_acc_add_above_zero);
+		n.getParam("tetraDS/b_dec", config_.b_dec);
+		n.getParam("tetraDS/angular_acc_dec", config_.angular_acc_dec);
+		n.getParam("tetraDS/wheel_radius", config_.wheel_radius);
+		n.getParam("tetraDS/wheel_distance", config_.wheel_distance);
+		n.getParam("tetraDS/use_total_distance_pub", config_.use_total_distance_pub);
+		n.getParam("tetraDS/frame_id", config_.frame_id);
+		n.getParam("tetraDS/child_frame_id", config_.child_frame_id);
+
 		//smoother velocity Loop
 		//linear_velocity
 		if(linear > 0)
