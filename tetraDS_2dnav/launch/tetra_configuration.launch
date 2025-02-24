@@ -102,7 +102,7 @@
   <!--realsense_Point Cloud data -->
   <include file = "$(find realsense2_camera)/launch/rs_pointcloud_front.launch"/>
 
-  <!--Cygbot LiDAR-->
+  <!--Cygbot LiDAR 2-->
   <node name="cyglidar_publisher" pkg="cyglidar_d2_ros1" type="cyglidar_publisher" output="screen">
 		<param name="port_number"       	value="/dev/cyglidar"/>
 		<param name="baud_rate"         	value="0"/>
@@ -122,6 +122,19 @@
 		<param name="clahe_tiles_grid_size" value="8"/>
     <remap from="scan" to="scan_laser" />
 	</node>
+  
+  <!--Cygbot LiDAR 1
+  <node pkg="cyglidar_d1" type="cyglidar_pcl_publisher" name="line_laser" output="screen">
+    <param name="port" value="/dev/cyglidar"/>
+    <param name="baud_rate" value="3000000"/>
+    <param name="frame_id" value="$(optenv ROS_NAMESPACE)/laser_link2"/>
+    <param name="fixed_frame" value="/map"/>
+    <param name="run_mode" value="2"/>
+    <param name="frequency" value="0"/>
+    <param name="set_auto_duration" value="0"/>
+    <param name="duration" value="10000"/>
+  </node>
+  -->
 
   <node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_republisher" output="screen" />
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" ></include> <!-- 멀티관제시 주석 -->
