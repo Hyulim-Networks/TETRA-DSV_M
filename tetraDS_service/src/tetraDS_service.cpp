@@ -2038,30 +2038,68 @@ bool Patrol_Conveyor_Command(tetraDS_service::patrol_conveyor::Request &req,
 	return true;
 }
 
-// Manual_Backmove_Command 
 bool Manual_Backmove_Command(tetraDS_service::manual_backmove::Request &req, 
 				             tetraDS_service::manual_backmove::Response &res)
 {
-    //printf("Call Manual_Backmove_Command Service !! \n");
-	bool bResult = false;
-
+    bool bResult = false;
     _pRobot_Status.m_cmd_vel = req.cmd_vel;
-    _pRobot_Status.m_backmove_cmd = req.move_distance;
+    _pRobot_Status.m_backmove_cmd = req.move_distance<0? req.move_distance*-1: req.move_distance;
     _pRobot_Status.m_dGoal_Distance = _pRobot_Status.m_backmove_cmd + _pRobot_Status.m_dTotal_Distance;
-	
-    if(_pRobot_Status.m_cmd_vel == 0)
-    {
-	ex_iDocking_CommandMode = 0;
-    }
-    else
-    {
-	ex_iDocking_CommandMode = 200;
-    }
+    ex_iDocking_CommandMode = 200;
 	
 	bResult = true;
 	res.command_Result = bResult;
-	return true;
+	return bResult;
+}
 
+bool manual_move_cmd(){
+    bool bResult = false;
+    geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
+
+    if(_pRobot_Status.m_cmd_vel==0.0|| _pRobot_Status.m_backmove_cmd==0.0) {
+        ex_iDocking_CommandMode = 0;
+        return bResult;
+    }
+
+    cmd->linear.x = _pRobot_Status.m_cmd_vel;
+    cmd->angular.z = 0.0;
+    cmdpub_.publish(cmd);
+
+    while(_pRobot_Status.m_dGoal_Distance>_pRobot_Status.m_dTotal_Distance){
+        float m_distance= _pRobot_Status.m_dGoal_Distance-_pRobot_Status.m_dTotal_Distance;
+        if(_pRobot_Status.m_cmd_vel==0.0|| _pRobot_Status.m_backmove_cmd==0.0) {
+            ex_iDocking_CommandMode = 0;
+            cmd->linear.x = 0.0;
+            cmd->angular.z = 0.0;
+            cmdpub_.publish(cmd);
+            return bResult;
+        }
+        if(_pRobot_Status.m_cmd_vel<0 && _pFlag_Value.m_bFlag_Obstacle_cygbot){
+            ex_iDocking_CommandMode = 0;
+            printf("Back Obstacle! cancel move...\n");
+            cmd->linear.x = 0.0;
+            cmd->angular.z = 0.0;
+            cmdpub_.publish(cmd);
+            return bResult;
+        }
+        if(_pRobot_Status.m_cmd_vel>0 && _pFlag_Value.m_bFlag_Obstacle_Center){
+            printf("Center Obstacle! cancel move...\n");
+            cmd->linear.x = 0.0;
+            cmd->angular.z = 0.0;
+            cmdpub_.publish(cmd);
+            ex_iDocking_CommandMode = 0;
+            return bResult;
+        }
+        usleep(1000);
+    }
+
+    cmd->linear.x = 0.0;
+    cmd->angular.z = 0.0;
+    cmdpub_.publish(cmd);
+    ex_iDocking_CommandMode = 0;
+
+    bResult = true;
+    return bResult;
 }
 
 void Reset_EKF_SetPose()
@@ -3865,6 +3903,14 @@ void *DockingThread_function(void *data)
                 setGoal(goal);
                 _pFlag_Value.m_bflag_ComebackHome = true;
                 ex_iDocking_CommandMode = 0;
+                break;
+            case 200:
+                manual_move_cmd();
+                if(_pFlag_Value.m_bfalg_DockingExit)
+                {
+                    Docking_EXIT();
+                    ex_iDocking_CommandMode = 0;
+                }
                 break;
             default:
                 break;

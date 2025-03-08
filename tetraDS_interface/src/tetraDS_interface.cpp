@@ -825,7 +825,7 @@ int main(int argc, char * argv[])
 	std_msgs::Int32 conveyor_movement;
 
 	//Servo On/Off publish
-    	servo_pub = n.advertise<std_msgs::Int32>("Servo_ON",10);
+    servo_pub = n.advertise<std_msgs::Int32>("Servo_ON",10);
 
 	//POWER Enable service
 	power_enable_service = IOS_h.advertiseService("Power_enable_cmd", PowerEnableOnOff);
