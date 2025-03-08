@@ -537,8 +537,7 @@ int main(int argc, char * argv[])
 	ros::Rate loop_rate(30.0); //default: 30HZ
 
 	dynamic_reconfigure::Server<tetraDS::TetraDsConfig> dynamic_reconfigure_server_;
-	dynamic_reconfigure::Server<tetraDS::TetraDsConfig>::CallbackType cb = boost::bind(&update_config, this, _1, _2);
-	dynamic_reconfigure_server_.setCallback(cb);
+	dynamic_reconfigure_server_.setCallback(update_config);
 
 	std::string port_str;
 	n.param<std::string>("port", port_str, "/dev/ttyS0");
