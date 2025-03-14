@@ -424,6 +424,9 @@ move_base_msgs::MoveBaseActionGoal goal;
 //Docking_progress
 ros::Publisher docking_progress_pub;
 std_msgs::Int32 docking_progress;
+// manual move progress
+ros::Publisher manual_move_progress_pub;
+std_msgs::Int32 manual_move_progress;
 
 //Virtual Costmap//
 ros::Publisher virtual_obstacle_pub;
@@ -2064,14 +2067,18 @@ bool manual_move_cmd(){
     cmd->linear.x = _pRobot_Status.m_cmd_vel;
     cmd->angular.z = 0.0;
     cmdpub_.publish(cmd);
+    manual_move_progress.data=1;
+    manual_move_progress_pub.publish(manual_move_progress);
 
-    while(_pRobot_Status.m_dGoal_Distance>_pRobot_Status.m_dTotal_Distance){
+    while(_pRobot_Status.m_dGoal_Distance>_pRobot_Status.m_dTotal_Distance && ex_iDocking_CommandMode==200){
         float m_distance= _pRobot_Status.m_dGoal_Distance-_pRobot_Status.m_dTotal_Distance;
         if(_pRobot_Status.m_cmd_vel==0.0|| _pRobot_Status.m_backmove_cmd==0.0) {
             ex_iDocking_CommandMode = 0;
             cmd->linear.x = 0.0;
             cmd->angular.z = 0.0;
             cmdpub_.publish(cmd);
+            manual_move_progress.data=2;
+            manual_move_progress_pub.publish(manual_move_progress);
             return bResult;
         }
         if(_pRobot_Status.m_cmd_vel<0 && _pFlag_Value.m_bFlag_Obstacle_cygbot){
@@ -2080,6 +2087,8 @@ bool manual_move_cmd(){
             cmd->linear.x = 0.0;
             cmd->angular.z = 0.0;
             cmdpub_.publish(cmd);
+            manual_move_progress.data=4;
+            manual_move_progress_pub.publish(manual_move_progress);
             return bResult;
         }
         if(_pRobot_Status.m_cmd_vel>0 && _pFlag_Value.m_bFlag_Obstacle_Center){
@@ -2088,15 +2097,21 @@ bool manual_move_cmd(){
             cmd->angular.z = 0.0;
             cmdpub_.publish(cmd);
             ex_iDocking_CommandMode = 0;
+            manual_move_progress.data=4;
+            manual_move_progress_pub.publish(manual_move_progress);
             return bResult;
         }
         usleep(1000);
+        manual_move_progress.data=1;
+        manual_move_progress_pub.publish(manual_move_progress);
     }
 
     cmd->linear.x = 0.0;
     cmd->angular.z = 0.0;
     cmdpub_.publish(cmd);
     ex_iDocking_CommandMode = 0;
+    manual_move_progress.data=0;
+    manual_move_progress_pub.publish(manual_move_progress);
 
     bResult = true;
     return bResult;
@@ -4692,7 +4707,10 @@ int main (int argc, char** argv)
     docking_progress_pub = docking_nh.advertise<std_msgs::Int32>("docking_progress", 1);
     //Docking positioning publish
     positioning_pub = docking_nh.advertise<geometry_msgs::Pose2D>("positioning", 10);
-    
+
+    manual_move_progress.data = 0;
+    manual_move_progress_pub = docking_nh.advertise<std_msgs::Int32>("manual_move_progress", 1);
+
     /*Thread Create...*/
     int docking_thread_id, auto_thread_id;
     int a = 1;
