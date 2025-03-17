@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   move_base
   visualization_msgs 
   dynamic_reconfigure
+  virtual_costmap_layer
+  virtual_costmap_layer2
 )
 
 add_service_files(
@@ -74,7 +76,7 @@ generate_messages(
 
 catkin_package(
   LIBRARIES tetraDS_service
-  CATKIN_DEPENDS roscpp std_msgs std_srvs message_generation message_runtime
+  CATKIN_DEPENDS roscpp std_msgs std_srvs message_generation message_runtime virtual_costmap_layer virtual_costmap_layer2
 )
 
 include_directories(
