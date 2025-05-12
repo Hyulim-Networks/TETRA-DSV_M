@@ -62,7 +62,7 @@ TebLocalPlannerROS:
  # Optimization
  no_inner_iterations: 5
  no_outer_iterations: 4
- penalty_epsilon: 0.04
+ penalty_epsilon: 0.01
  weight_max_vel_x: 1.0
  weight_max_vel_y: 0.0
  weight_max_vel_theta: 1.0
