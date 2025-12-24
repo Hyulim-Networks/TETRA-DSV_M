@@ -598,6 +598,8 @@ bool m_bToggle_enabled_flag1 = false;
 bool m_bToggle_enabled_flag2 = false;
 //************************************************************************************************************************//
 
+std::atomic<bool> isRecharging(false);
+
 void my_handler(sig_atomic_t s)
 {
     printf("Caught signal %d\n",s);
@@ -1143,7 +1145,7 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
         {
             if(!m_flag_Dynamic_Teblocalplan_major_update)
             {
-                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.35);
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.6);
                 m_flag_Dynamic_Teblocalplan_major_update = true;
                 m_flag_Dynamic_Teblocalplan_minor_update = false;
                 _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
@@ -2426,6 +2428,10 @@ bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req,
 
 void reCharging()
 {
+    if(isRecharging.exchange(true)) {
+        return;
+    }
+
     _pFlag_Value.m_Onetime_reset_cnt = 0;
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
     ROS_INFO("reCharging...");
@@ -2433,13 +2439,24 @@ void reCharging()
     cmd->angular.z = 0.0;
     cmdpub_.publish(cmd);
     sleep(2);
-    cmd->linear.x = -0.1;
-    cmd->angular.z = 0.0;
-    cmdpub_.publish(cmd);
-    sleep(2);
     cmd->linear.x = 0.0;
     cmd->angular.z = 0.0;
     cmdpub_.publish(cmd);
+    while(_pRobot_Status.m_iCallback_Charging_status==7){
+        ros::spinOnce();
+    }
+    cmd->linear.x = -0.05;
+    cmd->angular.z = 0.0;
+    cmdpub_.publish(cmd);
+    sleep(2);
+    while(_pRobot_Status.m_iCallback_Charging_status==1){
+        ros::spinOnce();
+    }
+    cmd->linear.x = 0.0;
+    cmd->angular.z = 0.0;
+    cmdpub_.publish(cmd);
+    ROS_INFO("reCharging finish");
+    isRecharging = false;
 }
 
 void ChargingCallback(const std_msgs::Int32::ConstPtr& msg)
@@ -2449,7 +2466,10 @@ void ChargingCallback(const std_msgs::Int32::ConstPtr& msg)
     if(_pRobot_Status.m_iCallback_Charging_status == 7)
     {
         _pFlag_Value.m_Onetime_reset_cnt++;
-        if(_pFlag_Value.m_Onetime_reset_cnt > 100) reCharging();
+        if(_pFlag_Value.m_Onetime_reset_cnt > 1000) {
+            std::thread t(reCharging);
+            t.detach();
+        }
     }else{
         _pFlag_Value.m_Onetime_reset_cnt = 0;
     }
@@ -2585,7 +2605,68 @@ bool SaveLandMark(LANDMARK_POSE p)
     return bResult;
 }
 
+void setARGoal(double target_dist)
+{
+    if (_pAR_tag_pose.m_iAR_tag_id == -1)
+    {
+        printf("No AR Tag Detected! Cannot set goal.\n");
+        return;
+    }
 
+    geometry_msgs::PoseStamped marker_pose;
+    geometry_msgs::PoseStamped marker_pose_map; 
+    ros::Time now = ros::Time(0);
+
+    tf::TransformListener tfListener;
+
+    marker_pose.header.frame_id = _pAR_tag_pose.m_iAR_tag_frame;
+    marker_pose.header.stamp = now;
+    marker_pose.pose.position.x = _pAR_tag_pose.m_fAR_tag_pose_x;
+    marker_pose.pose.position.y = _pAR_tag_pose.m_fAR_tag_pose_y;
+    marker_pose.pose.position.z = _pAR_tag_pose.m_fAR_tag_pose_z;
+    marker_pose.pose.orientation.x = _pAR_tag_pose.m_fAR_tag_orientation_x;
+    marker_pose.pose.orientation.y = _pAR_tag_pose.m_fAR_tag_orientation_y;
+    marker_pose.pose.orientation.z = _pAR_tag_pose.m_fAR_tag_orientation_z;
+    marker_pose.pose.orientation.w = _pAR_tag_pose.m_fAR_tag_orientation_w;
+
+    try {
+        tfListener.waitForTransform("map", marker_pose.header.frame_id, now, ros::Duration(3.0));
+        tfListener.transformPose("map", marker_pose, marker_pose_map);
+    } catch (tf::TransformException &ex) {
+        ROS_WARN("%s", ex.what());
+    }
+
+    tf::Quaternion q;
+    q.setRPY(0, 0, -_pAR_tag_pose.m_fAR_tag_pitch);
+    tf::Matrix3x3 m(q);
+    tf::Vector3 forward = m.getColumn(2); 
+
+    double offset = -target_dist;
+    geometry_msgs::PoseStamped goal_pose = marker_pose_map;
+
+    goal_pose.pose.position.x += offset * cos(-_pAR_tag_pose.m_fAR_tag_pitch);
+    goal_pose.pose.position.y += offset * sin(-_pAR_tag_pose.m_fAR_tag_pitch);
+    goal_pose.pose.position.z = 0.0;
+
+    goal_pose.pose.orientation.x = q.x();
+    goal_pose.pose.orientation.y = q.y();
+    goal_pose.pose.orientation.z = q.z();
+    goal_pose.pose.orientation.w = q.w();
+
+    move_base_msgs::MoveBaseActionGoal goal;
+
+    goal.header.frame_id = "map"; 
+    goal.header.stamp = now;
+    goal.goal_id.stamp = now;
+    goal.goal.target_pose = goal_pose;
+
+    service_pub.publish(goal);
+    //goal_pub_.publish(goal_pose);
+
+    printf("setARGoal call: Distance to Tag: %.3fm -> Moving %.3fm\n", 
+            _pAR_tag_pose.m_fAR_tag_pose_z, target_dist);
+    
+}
 
 //AR_tagCallback
 void AR_tagCallback(ar_track_alvar_msgs::AlvarMarkers req) 

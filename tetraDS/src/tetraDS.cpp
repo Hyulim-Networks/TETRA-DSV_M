@@ -145,19 +145,26 @@ class TETRA
 
     void pub()
 	{
-        	double dt=(current_time-last_time).toSec();
-        	double velocity[3];
+		double dt=(current_time-last_time).toSec();
+		double velocity[3];
+
+        double dx = coordinates[0] - prev_coordinates[0];
+        double dy = coordinates[1] - prev_coordinates[1];
+        double dtheta = coordinates[2] - prev_coordinates[2];
+
+        dtheta = atan2(sin(dtheta), cos(dtheta));
+        velocity[2] = dtheta / dt;
+        velocity[0] = (dx * cos(coordinates[2]) + dy * sin(coordinates[2])) / dt;
+        velocity[1] = (-dx * sin(coordinates[2]) + dy * cos(coordinates[2])) / dt;
 
 		for(int i=0;i<3;i++)
 		{
-		    velocity[i]=(coordinates[i]-prev_coordinates[i])/dt;
 		    prev_coordinates[i]=coordinates[i];
 		}
 
-		
-        	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(coordinates[2]);
-		
-        	geometry_msgs::TransformStamped odom_trans;
+        geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(coordinates[2]);
+
+        geometry_msgs::TransformStamped odom_trans;
 		if(!m_bEKF_option) // ekf_localization option 
 		{
 			odom_trans.header.stamp = current_time;
@@ -196,7 +203,7 @@ class TETRA
 		odom.pose.pose.position.z= 0.0;
 		odom.pose.pose.orientation= odom_quat;
 		odom.twist.twist.linear.x = velocity[0];
-		odom.twist.twist.linear.y = velocity[1];
+		odom.twist.twist.linear.y = 0.0;
 		odom.twist.twist.linear.z = 0.0;
 		odom.twist.twist.angular.z = velocity[2];
 		odom_publisher.publish(odom);
@@ -466,7 +473,8 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 
 	int iData1 = 1000.0 * RPM_to_ms(Left_Wheel_vel);
 	int iData2 = 1000.0 * RPM_to_ms(Right_Wheel_vel);
-	dssp_rs232_drv_module_set_velocity(iData1, iData2);
+	//dssp_rs232_drv_module_set_velocity(iData1, iData2); //ASCII Command
+	dssp_rs232_drv_module_set_velocity2(iData1, iData2, &m_dX_pos, &m_dY_pos, &m_dTheta, &m_bumper_data, &m_emg_state); //binary Command
 }
 
 void update_config(tetraDS::TetraDsConfig &new_config, uint32_t level)
@@ -534,7 +542,7 @@ int main(int argc, char * argv[])
 	linear_position_move_service = param.advertiseService("linear_move_cmd", Linear_Move_Command);
 	angular_position_move_service = param.advertiseService("angular_move_cmd", Angular_Move_Command);
 
-	ros::Rate loop_rate(30.0); //default: 30HZ
+	ros::Rate loop_rate(60.0); //default: 30HZ
 
 	dynamic_reconfigure::Server<tetraDS::TetraDsConfig> dynamic_reconfigure_server_;
 	dynamic_reconfigure_server_.setCallback(update_config);
@@ -671,15 +679,17 @@ int main(int argc, char * argv[])
 		bumper_publisher.publish(bumper_data);
 		
 		//Error Code Check Loop
-		left_error_code.data = m_left_error_code;
-		left_error_code_publisher.publish(left_error_code);
-		right_error_code.data = m_right_error_code;
-		right_error_code_publisher.publish(right_error_code);
+		// left_error_code.data = m_left_error_code;
+		// left_error_code_publisher.publish(left_error_code);
+		// right_error_code.data = m_right_error_code;
+		// right_error_code_publisher.publish(right_error_code);
 
 		//odometry callback//
-		dssp_rs232_drv_module_read_odometry(&m_dX_pos, &m_dY_pos, &m_dTheta);
-		tetra.coordinates[0] = (m_dX_pos /1000.0);
-		tetra.coordinates[1] = (m_dY_pos /1000.0);
+		// dssp_rs232_drv_module_read_odometry(&m_dX_pos, &m_dY_pos, &m_dTheta);
+		// tetra.coordinates[0] = (m_dX_pos /1000.0);
+		// tetra.coordinates[1] = (m_dY_pos /1000.0);
+		tetra.coordinates[0] = (m_dX_pos /10000.0);
+		tetra.coordinates[1] = (m_dY_pos /10000.0);
 		tetra.coordinates[2] = m_dTheta * (M_PI/1800.0);
 
 		ex_dIncrement_Distance = sqrt(((tetra.coordinates[0] - ex_dBefore_Position_x)*(tetra.coordinates[0] - ex_dBefore_Position_x))+((tetra.coordinates[1] - ex_dBefore_Position_y)*(tetra.coordinates[1] - ex_dBefore_Position_y)));
@@ -696,17 +706,17 @@ int main(int argc, char * argv[])
 		if(!bPosition_mode_flag) //Velocity mode only
 		{
 			SetMoveCommand(control_linear, control_angular);
-			dssp_rs232_drv_module_read_bumper_emg(&m_bumper_data, &m_emg_state, &m_left_error_code, &m_right_error_code);
+			//dssp_rs232_drv_module_read_bumper_emg(&m_bumper_data, &m_emg_state, &m_left_error_code, &m_right_error_code);
 		}
 
 		//Error Code Check -> Reset & servo On Loop
-		if(m_left_error_code != 48 || m_right_error_code != 48)
-		{
-			printf("[Motor Driver Error] Left Error Code: %d \n", m_left_error_code);
-			printf("[Motor Driver Error] Right Error Code: %d \n", m_right_error_code);
-			usleep(1000);
-			dssp_rs232_drv_module_set_servo(0); //Servo Off
-		}
+		// if(m_left_error_code != 48 || m_right_error_code != 48)
+		// {
+		// 	printf("[Motor Driver Error] Left Error Code: %d \n", m_left_error_code);
+		// 	printf("[Motor Driver Error] Right Error Code: %d \n", m_right_error_code);
+		// 	usleep(1000);
+		// 	dssp_rs232_drv_module_set_servo(0); //Servo Off
+		// }
 
 		if(m_bumper_data == 2 || m_bumper_data == 3) 
 		{
