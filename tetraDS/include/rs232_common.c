@@ -158,18 +158,21 @@ int get_response2(int fd, unsigned char data[])
 
     do {
         ret = read(fd, data, 1);
-        if (ret <= 0) return -1;
-    } while (data[0] != STX);
 
-    while (read_bytes < 15) {
-        ret = read(fd, &data[1 + read_bytes], 15 - read_bytes);
+        if (ret <= 0) 
+				return -1;
+    } while (data[0] != STX);
+	
+
+    while (read_bytes < 19) {
+        ret = read(fd, &data[1 + read_bytes], 19 - read_bytes);
         if (ret <= 0) return -1;
         read_bytes += ret;
     }
 
     if (data[1] != FLAG_OK)
         return -1;
-    if (data[15] != make_lrc(&data[1], 14))
+    if (data[19] != make_lrc(&data[1], 18))
         return -1;
 
     return 0;

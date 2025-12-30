@@ -325,6 +325,57 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 	return ret;
 }
 
+int power_set_Ultrasonic(int fd, int mode)
+{
+	int ret;
+	unsigned char packet_buf[255] = {STX, 'P', 'S'};
+
+	if(!fd) return -1;
+	if(mode == 1)//On
+	{
+		packet_buf[3] = '1';
+	}
+	else//Off
+	{
+		packet_buf[3] = '0';
+	}
+	packet_buf[4] = ETX;
+	packet_buf[5] = make_lrc(&packet_buf[1], 4);
+
+	ret = write(fd, packet_buf, 6);
+	if(ret <= 0) return -2;
+
+	memset(packet_buf, 0, sizeof(unsigned char)*255);
+	ret = get_response(fd, packet_buf);
+	return ret;
+}
+
+int  power_read_Ultrasonic(int fd,  double *Ultrasonic)
+{
+	unsigned char packet_buf[255] = {STX, 'P','N', ETX};
+	int ret;
+	if(!fd) return -1;
+
+	packet_buf[4] = make_lrc(&packet_buf[1], 3);
+	ret = write(fd, packet_buf, 5);
+	if(ret <= 0) return -2;
+
+	memset(packet_buf, 0, sizeof(unsigned char)*255);
+	ret = get_response2(fd, packet_buf);
+
+	int _m_Sonar_1 = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
+	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
+	int _m_Sonar_2 = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
+	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
+	int _m_Sonar_3 = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
+	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
+	int _m_Sonar_0= (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
+	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
+	return ret;
+}
+
+
+
 int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output)
 {
 	unsigned char packet_buf[255] = {STX, 'P','Q', ETX};

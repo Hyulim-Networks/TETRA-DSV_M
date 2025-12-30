@@ -42,6 +42,9 @@ int m_old_accel_data = 50;
 double m_dX_pos = 0.0;
 double m_dY_pos = 0.0;
 double m_dTheta = 0.0;
+//Velocity
+double m_dVelocity_l = 0.0;
+double m_dVelocity_r = 0.0;
 //bumper & emg
 int m_bumper_data = 0;
 int m_emg_state = 0;
@@ -53,7 +56,7 @@ int m_iPOS_Y = 0;
 int m_iPOS_Theta = 0;
 bool bPosition_mode_flag = false;
 //emg one time check flag
-bool m_bCheck_emg = true;
+bool m_bCheck_emg = false;
 //tf_prefix add
 std::string tf_prefix_;
 bool has_prefix;
@@ -202,10 +205,12 @@ class TETRA
 		odom.pose.pose.position.y= coordinates[1];
 		odom.pose.pose.position.z= 0.0;
 		odom.pose.pose.orientation= odom_quat;
-		odom.twist.twist.linear.x = velocity[0];
+		//odom.twist.twist.linear.x = velocity[0];
+		odom.twist.twist.linear.x = m_dVelocity_l/1000.0;  //velocity[0];
 		odom.twist.twist.linear.y = 0.0;
 		odom.twist.twist.linear.z = 0.0;
-		odom.twist.twist.angular.z = velocity[2];
+		//odom.twist.twist.angular.z = velocity[2];
+		odom.twist.twist.angular.z = m_dVelocity_r/1000.0; //velocity[2];
 		odom_publisher.publish(odom);
 
 		last_time=current_time;
@@ -474,7 +479,7 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 	int iData1 = 1000.0 * RPM_to_ms(Left_Wheel_vel);
 	int iData2 = 1000.0 * RPM_to_ms(Right_Wheel_vel);
 	//dssp_rs232_drv_module_set_velocity(iData1, iData2); //ASCII Command
-	dssp_rs232_drv_module_set_velocity2(iData1, iData2, &m_dX_pos, &m_dY_pos, &m_dTheta, &m_bumper_data, &m_emg_state); //binary Command
+	dssp_rs232_drv_module_set_velocity2(iData1, iData2, &m_dX_pos, &m_dY_pos, &m_dTheta, &m_dVelocity_l, &m_dVelocity_r, &m_bumper_data, &m_emg_state); //binary Command
 }
 
 void update_config(tetraDS::TetraDsConfig &new_config, uint32_t level)
@@ -739,6 +744,30 @@ int main(int argc, char * argv[])
 				m_bflag_bumper = true;
 			}
 		}
+
+		/* 
+		if(m_bCheck_emg){
+			if(m_emg_state == 1) 
+			{
+				if(m_bflag_bumper)
+				{
+					dssp_rs232_drv_module_set_servo(0); //Servo Off
+					usleep(1000);
+					dssp_rs232_drv_module_set_drive_err_reset();
+					usleep(1000);
+					m_bflag_bumper = false;
+				}
+			}
+			else
+			{
+				if(!m_bflag_bumper)
+				{
+					dssp_rs232_drv_module_set_servo(1); //Servo On
+					m_bflag_bumper = true;
+				}
+			}
+		}
+		*/
 
 		tetra.read();
 		loop_rate.sleep();

@@ -19,14 +19,16 @@
 
   <!-- TETRA description-->
   <arg name="urdf_file" default="$(find xacro)/xacro '--inorder' '$(find tetraDS_description)/urdf/tetraDS/tetraDS.xacro'"/>
+  <arg name="urdf_file_bak" default="$(find xacro)/xacro '--inorder' '$(find tetraDS_description)/urdf/tetraDS/tetraDS_bak.xacro'"/>
   <param name="robot_description" command="$(arg urdf_file)"/>
+  <!--<param name="robot_description" command="$(arg urdf_file_bak)"/>-->
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
   <!-- 2D LiDAR  SICK TIM571-->
   <node name="sick_tim571_2050101" pkg="sick_tim" type="sick_tim551_2050001" respawn="false" output="screen">
-    <param name="min_ang" type="double" value="-2.35619" /> <!--135deg-->
-    <param name="max_ang" type="double" value="2.35619" />  <!--135deg-->
+    <param name="min_ang" type="double" value="-2.16421" /> <!--124deg, 135deg -2.35619-->
+    <param name="max_ang" type="double" value="2.16421" />  <!--124deg, 135deg 2.35619-->
     <param name="intensity" type="bool" value="false" />
     <param name="skip" type="int" value="0" />
     <param name="frame_id" type="str" value="$(optenv ROS_NAMESPACE)/laser" />
@@ -100,7 +102,13 @@
   </node>
 
   <!--realsense_Point Cloud data -->
-  <include file = "$(find realsense2_camera)/launch/rs_pointcloud_front.launch"/>
+  <include file = "$(find realsense2_camera)/launch/rs_pointcloud_front.launch"/><!--realsense_Point Cloud data -->
+  
+  <!--<include file = "$(find realsense2_camera)/launch/rs_pointcloud_r.launch"/>-->
+  <!-- realsense_Point Cloud data2 (use timed launch) -->
+  <!--<include file = "$(find tetraDS_2dnav)/launch/timed_rgbd.launch"/>-->
+  <!-- Depthimage to Scan data -->
+  <!--<include file="$(find tetraDS_2dnav)/launch/DepthimageToScan.launch"/>-->
 
   <!--Cygbot LiDAR 2-->
   <node name="cyglidar_publisher" pkg="cyglidar_d2_ros1" type="cyglidar_publisher" output="screen">

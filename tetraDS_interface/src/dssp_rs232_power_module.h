@@ -3,6 +3,8 @@ void dssp_rs232_power_module_destroy();
 int  dssp_rs232_power_module_read_battery(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
 int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
 int  dssp_rs232_power_module_read_bumper(int *bumper_data);
+int  dssp_rs232_power_module_set_Ultrasonic(int mode);
+int  dssp_rs232_power_module_read_Ultrasonic(double * Ultrasonic);
 int  dssp_rs232_power_module_adc_read(int *iADB_0, int *iADB_1, int *iADB_2, int *iADB_3, int *iADB_4, int *iADB_5, int *iADB_6, int *iADB_7);
 int  dssp_rs232_power_module_set_light(int id, int brightness);
 int  dssp_rs232_power_module_toggle_on(int id);

@@ -18,6 +18,14 @@ typedef struct DATA
     int    _iSBumper_5;
     int    _iSBumper_6;
     int    _iSBumper_7;
+    double _dUltrasonic_0_distance;
+    double _dUltrasonic_1_distance;
+    double _dUltrasonic_2_distance;
+    double _dUltrasonic_3_distance;
+    double _dUltrasonic_4_distance;
+    double _dUltrasonic_5_distance;
+    double _dUltrasonic_6_distance;
+    double _dUltrasonic_7_distance;	
 }DATA;
 
 int  power_init(const char *port, int time_out);
@@ -25,6 +33,8 @@ void power_deinit(int fd);
 int  power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
 int  power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
 int  power_read_bumper(int fd, int *bumper);
+int  power_set_Ultrasonic(int fd, int mode);
+int  power_read_Ultrasonic(int fd, double *Ultrasonic);
 int  power_read_data_all(int fd);
 int  power_adc_read(int fd, int *iADB_0, int *iADB_1, int *iADB_2, int *iADB_3, int *iADB_4, int *iADB_5, int *iADB_6, int *iADB_7);
 int  power_set_light(int fd, int id, int brightness);
