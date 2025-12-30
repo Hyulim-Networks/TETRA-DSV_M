@@ -102,6 +102,12 @@ double m_dCurrent = 0.0;
 int m_imode_status = 0;
 int m_iPowerCheck = 0;
 int m_iPowerCheckCount = 0;
+//Ultrasonic data//
+double m_dUltrasonic[8] = {0.0, };  //Max Ultrasonic: 8ea (TETRA-DS5 used 4ea)
+sensor_msgs::Range range_msg1; //Ultrasonic_1
+sensor_msgs::Range range_msg2; //Ultrasonic_2
+sensor_msgs::Range range_msg3; //Ultrasonic_3
+sensor_msgs::Range range_msg4; //Ultrasonic_4
 double time_offset_in_seconds;
 //GPIO data//
 int m_iOutput[8] = {0,};

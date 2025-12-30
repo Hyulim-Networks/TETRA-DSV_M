@@ -90,8 +90,8 @@ cd ~/catkin_ws
 rosdep install --from-paths src --ignore-src -r -y
 # 주요 ROS 패키지 설치
 sudo apt-get install ros-melodic-move-base ros-melodic-navigation ros-melodic-serial ros-melodic-rosbridge-server \
-		ros-melodic-teb-local-planner ros-melodic-spatio-temporal-voxel-layer ros-melodic-ar-track-alvar \
-		ros-melodic-rgbd-launch ros-melodic-tf2-web-republisher ros-melodic-robot-localization ros-melodic-joy rapidjson-dev
+ros-melodic-teb-local-planner ros-melodic-spatio-temporal-voxel-layer ros-melodic-ar-track-alvar \
+ros-melodic-rgbd-launch ros-melodic-tf2-web-republisher ros-melodic-robot-localization ros-melodic-joy rapidjson-dev
 # 시리얼 통신 권한 설정
 sudo chmod 666 /dev/ttyS0
 sudo chmod 666 /dev/ttyS1
