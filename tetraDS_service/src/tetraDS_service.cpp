@@ -2491,10 +2491,18 @@ void EMGCallback(const std_msgs::Int32::ConstPtr& msg)
 {
     bool isChange= _pRobot_Status.m_iCallback_EMG != msg->data;
     _pRobot_Status.m_iCallback_EMG = msg->data;
-    if(_pRobot_Status.m_iCallback_EMG != 0&& isChange)
+    if(_pRobot_Status.m_iCallback_EMG != 0)
     {
         LED_Toggle_Control(1, 10,100,10,1);
         LED_Turn_On(18);
+    }
+    else
+    {
+        LED_Toggle_Control(1, 3,100,3,1);
+        LED_Turn_On(63);
+    }
+    if(_pRobot_Status.m_iCallback_EMG != 0&& isChange)
+    {
         printf("[EMG] Push EMG button!! _ RED LED On \n");
         _pFlag_Value.m_emgpush_flag = false;
     }
@@ -2502,8 +2510,6 @@ void EMGCallback(const std_msgs::Int32::ConstPtr& msg)
     {
         if(!_pFlag_Value.m_emgpush_flag)
         {
-            LED_Toggle_Control(1, 3,100,3,1);
-            LED_Turn_On(63);
             _pFlag_Value.m_emgpush_flag = true;
         }
     }
