@@ -473,13 +473,23 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 	double Left_Wheel_vel = 0.0;
 	double Right_Wheel_vel = 0.0;
 	speed_to_diwheel_rpm(fLinear_vel, fAngular_vel, &Left_Wheel_vel, &Right_Wheel_vel);
-
 	//printf("Left_Wheel_vel: %f, Right_Wheel_vel: %f \n", Left_Wheel_vel, Right_Wheel_vel);
 
 	int iData1 = 1000.0 * RPM_to_ms(Left_Wheel_vel);
 	int iData2 = 1000.0 * RPM_to_ms(Right_Wheel_vel);
 	//dssp_rs232_drv_module_set_velocity(iData1, iData2); //ASCII Command
-	dssp_rs232_drv_module_set_velocity2(iData1, iData2, &m_dX_pos, &m_dY_pos, &m_dTheta, &m_dVelocity_l, &m_dVelocity_r, &m_bumper_data, &m_emg_state); //binary Command
+	int ret = dssp_rs232_drv_module_set_velocity2(iData1, iData2, &m_dX_pos, &m_dY_pos, &m_dTheta, &m_dVelocity_l, &m_dVelocity_r, &m_bumper_data, &m_emg_state); //binary Command
+	if(ret == -2) dssp_rs232_drv_module_read_bumper_emg(&m_bumper_data, &m_emg_state, &m_left_error_code, &m_right_error_code);
+	else return;
+	
+	//Error Code Check -> Reset & servo On Loop
+	if(m_left_error_code != 48 || m_right_error_code != 48)
+	{
+		printf("[Motor Driver Error] Left Error Code: %d \n", m_left_error_code);
+		printf("[Motor Driver Error] Right Error Code: %d \n", m_right_error_code);
+		usleep(1000);
+		dssp_rs232_drv_module_set_servo(0); //Servo Off
+	}
 }
 
 void update_config(tetraDS::TetraDsConfig &new_config, uint32_t level)
