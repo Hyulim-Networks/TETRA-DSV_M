@@ -12,7 +12,7 @@ TebLocalPlannerROS:
  max_samples: 50
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 1.0 #0.5
- max_global_plan_lookahead_dist: 5.0
+ max_global_plan_lookahead_dist: 1.1
  force_reinit_new_goal_dist: 1.0
  feasibility_check_no_poses: 6 #3
  publish_feedback: false
@@ -25,10 +25,10 @@ TebLocalPlannerROS:
  max_vel_x: 0.8
  max_vel_y: 0.0
  max_vel_x_backwards: 0.05 #0.15
- max_vel_theta: 0.15
- acc_lim_x: 2.0
+ max_vel_theta: 0.4
+ acc_lim_x: 0.1
  acc_lim_y: 0.0 
- acc_lim_theta: 2.0
+ acc_lim_theta: 0.1
  min_turning_radius: 0.0
  wheelbase: 0.0
  cmd_angle_instead_rotvel: false
@@ -66,9 +66,9 @@ TebLocalPlannerROS:
  weight_max_vel_x: 1.0
  weight_max_vel_y: 0.0
  weight_max_vel_theta: 1.0
- weight_acc_lim_x: 0.0
+ weight_acc_lim_x: 1.0
  weight_acc_lim_y: 0.0 
- weight_acc_lim_theta: 0.0
+ weight_acc_lim_theta: 1.0
  weight_kinematics_nh: 1000.0
  weight_kinematics_forward_drive: 1000.0
  weight_kinematics_turning_radius: 1.0

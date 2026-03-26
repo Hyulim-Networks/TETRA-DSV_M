@@ -4680,9 +4680,9 @@ int main (int argc, char** argv)
     //amcl particlecloud Subscribe
     ros::Subscriber pacticle_sub = nh.subscribe<geometry_msgs::PoseArray>("particlecloud", 3000, Particle_Callback);
     //teb Markers Subscribe
-    ros::Subscriber tebmarksers_sub = nh.subscribe<visualization_msgs::Marker>("move_base/TebLocalPlannerROS/teb_markers", 100, TebMarkers_Callback);
+    //ros::Subscriber tebmarksers_sub = nh.subscribe<visualization_msgs::Marker>("move_base/TebLocalPlannerROS/teb_markers", 100, TebMarkers_Callback);
     //teb_localPlan Subscribe
-    ros::Subscriber teblocalplan_sub = nh.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
+    //ros::Subscriber teblocalplan_sub = nh.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
     //Initialpose publish//
     initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100);
     //Initialpose Subscribe
