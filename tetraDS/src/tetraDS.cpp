@@ -468,6 +468,81 @@ double RPM_to_ms(double d_rpm)
 	return wheel_radius*2.0*M_PI*(d_rpm/60.0);
 }
 
+// 에러 정보를 담을 구조체
+struct MotorError {
+    std::string contents;
+    std::string cause;
+    std::string measures;
+};
+
+// 에러 코드(int)를 받아 해당하는 에러 정보를 반환하는 함수
+MotorError GetMotorErrorInfo(int error_code) {
+    switch(error_code) {
+        case 48: // 0x30 ('0')
+            return {"Normal state", "-", "-"};
+            
+        case 49: // 0x31 ('1')
+            return {"Emergency Stop", 
+                    "1) Emergency stop switch pressed", 
+                    "Release emergency stop switch"};
+                    
+        case 50: // 0x32 ('2')
+            return {"Motor hall sensor error", 
+                    "1) Hall sensor receiver error\n2) Motor line disconnected", 
+                    "Check motor / Check motor line"};
+                    
+        case 51: // 0x33 ('3')
+            return {"Encoder error", 
+                    "1) Encoder line error\n2) Motor line disconnected or miswired\n3) Driver gain setting error\n4) Power module damaged\n5) Encoder receiver error", 
+                    "Check encoder wiring\nCheck motor line system\nGain tuning"};
+                    
+        case 52: // 0x34 ('4')
+            return {"Detect Over Voltage", 
+                    "1) Power voltage exceeded rating\n2) Power module damaged\n3) Accel/decel setting error", 
+                    "Check power voltage\nCheck driver board\nChange parameter settings"};
+                    
+        case 53: // 0x35 ('5')
+            return {"Detect Under Voltage", 
+                    "1) Power voltage below rating", 
+                    "Check power voltage"};
+                    
+        case 54: // 0x36 ('6')
+            return {"Detect Over Load", 
+                    "1) Motor rated torque exceeds driver max output\n2) Torque limit setting error\n3) Operating speed/accel/decel setting error\n4) Obstacle in operating area", 
+                    "Check motor rated torque\nChange torque limit setting\nChange speed/accel/decel setting\nRemove obstacle"};
+                    
+        case 55: // 0x37 ('7')
+            return {"Detect Over Speed", 
+                    "1) Speed command exceeds rated speed", 
+                    "Change driver max speed setting"};
+                    
+        case 56: // 0x38 ('8')
+            return {"Detect Following Error", 
+                    "1) Following parameter setting error\n2) Driver gain setting error", 
+                    "Change parameter settings\nCheck encoder/motor line"};
+                    
+        default:
+            return {"Unknown Error", 
+                    "Undefined error code", 
+                    "Check manual"};
+    }
+}
+
+// 에러 로그를 포맷팅하여 출력하는 함수
+void PrintMotorErrorLog(const char* side, int error_code) {
+    if (error_code == 48) return; // 정상 상태는 무시
+
+    MotorError err = GetMotorErrorInfo(error_code);
+    
+    printf("\n==================================================\n");
+    printf("[Motor Driver Error - %s Wheel]\n", side);
+    printf(" - Code     : 0x%X ('%c')\n", error_code, error_code);
+    printf(" - Contents : %s\n", err.contents.c_str());
+    printf(" - Cause    : %s\n", err.cause.c_str());
+    printf(" - Measures : %s\n", err.measures.c_str());
+    printf("==================================================\n\n");
+}
+
 void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 {
 	double Left_Wheel_vel = 0.0;
@@ -484,12 +559,18 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 	
 	//Error Code Check -> Reset & servo On Loop
 	if(m_left_error_code != 48 || m_right_error_code != 48)
-	{
-		printf("[Motor Driver Error] Left Error Code: %d \n", m_left_error_code);
-		printf("[Motor Driver Error] Right Error Code: %d \n", m_right_error_code);
-		usleep(1000);
-		dssp_rs232_drv_module_set_servo(0); //Servo Off
-	}
+    {
+        // 왼쪽, 오른쪽 각각 에러 상태인지 확인 후 직관적인 로그 출력
+        if(m_left_error_code != 48) {
+            PrintMotorErrorLog("Left", m_left_error_code);
+        }
+        if(m_right_error_code != 48) {
+            PrintMotorErrorLog("Right", m_right_error_code);
+        }
+
+        usleep(1000);
+        dssp_rs232_drv_module_set_servo(0); // Servo Off
+    }
 }
 
 void update_config(tetraDS::TetraDsConfig &new_config, uint32_t level)
